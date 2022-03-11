@@ -1,6 +1,6 @@
 [submodule "ST2022"]
-	path = ST2022
+	path = cognates/ST2022
 	url = git@github.com:sigtyp/ST2022.git
 [submodule "2022SegmentationST"]
-	path = 2022SegmentationST
+	path = segmentation/2022SegmentationST
 	url = git@github.com:sigmorphon/2022SegmentationST.git
