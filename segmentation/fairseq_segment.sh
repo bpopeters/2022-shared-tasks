@@ -1,12 +1,14 @@
 readonly DATA=$1  # example: 2022-shared-tasks/segmentation/eng.word
 NAME=$( basename $DATA )  # i.e. eng.word
 
+readonly BEAM=5
+
 decode() {
     local -r CP="$1"; shift
     local -r MODE="$1"; shift
     # Fairseq insists on calling the dev-set "valid"; hack around this.
     local -r FAIRSEQ_MODE="${MODE/dev/valid}"
-    CHECKPOINT="fairseq-checkpoints/baseline/checkpoint_best.pt"
+    CHECKPOINT="fairseq-checkpoints/baseline/checkpoint_last.pt"
     RES="${CHECKPOINT/.pt/-${MODE}.res}"
     # Don't overwrite an existing prediction file.
     if [[ -f "${RES}" ]]; then
@@ -21,7 +23,6 @@ decode() {
         --source-lang="${NAME}.src" \
         --target-lang="${NAME}.tgt" \
         --path="${CHECKPOINT}" \
-        --seed="${SEED}" \
         --gen-subset="${FAIRSEQ_MODE}" \
         --beam="${BEAM}" \
         --no-progress-bar \
