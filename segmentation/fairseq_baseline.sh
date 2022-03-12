@@ -119,10 +119,9 @@ decode() {
 }
 
 main() {
-    tsv
-    bin
-    train "fairseq-checkpoints/baseline"
-    decode "fairseq-checkpoints/baseline" dev
+    bash fairseq_prep.sh $DATA
+    bash fairseq_train.sh $DATA
+    bash fairseq_segment.sh $DATA
 }
 
 main
