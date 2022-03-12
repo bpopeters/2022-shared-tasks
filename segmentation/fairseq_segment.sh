@@ -18,17 +18,16 @@ decode() {
     OUT="${CP}/${MODE}.out"
     PRED="${CP}/${MODE}.pred"
     # Makes raw predictions.
-    fairseq-generate \
+    fairseq-interactive data-bin/eng.word/ --beam 5 --source-lang eng.word.src --target-lang eng.word.tgt --path fairseq-checkpoints/baseline/checkpoint_last.pt < dev.eng.word.src
+    fairseq-interactive \
         "data-bin/${NAME}" \
         --source-lang="${NAME}.src" \
         --target-lang="${NAME}.tgt" \
         --path="${CHECKPOINT}" \
-        --gen-subset="${FAIRSEQ_MODE}" \
         --beam="${BEAM}" \
-        --no-progress-bar \
-        > "${OUT}"
+        < "${NAME}" > "${OUT}"
     # Extracts the predictions into a TSV file.
-    cat "${OUT}" | grep '^H-' | cut -f3 > $PRED
+    cat "${OUT}" | grep '^H-' | cut -f3 | python postprocess_fairseq.py > $PRED
     # Applies the evaluation script to the TSV file.
     python evaluate.py "${DATA}.dev.tsv" "${PRED}"
 }
