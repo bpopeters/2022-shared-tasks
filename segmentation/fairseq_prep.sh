@@ -1,4 +1,4 @@
-readonly DATA=$1  # example: 2022-shared-tasks/segmentation/eng.word
+readonly DATA=$1  # example: 2022-shared-tasks/data/eng.word
 NAME=$( basename $DATA )  # i.e. eng.word
 
 tsv() {
@@ -16,4 +16,19 @@ tsv() {
     done
 }
 
+bin() {
+    # todo: fix testpref when it is available
+    fairseq-preprocess \
+        --source-lang="${NAME}.src" \
+        --target-lang="${NAME}.tgt" \
+        --trainpref=train \
+        --validpref=dev \
+        --testpref=dev \
+        --tokenizer=space \
+        --thresholdsrc=1 \
+        --thresholdtgt=1 \
+        --destdir="data-bin/${NAME}"
+}
+
 tsv
+bin
