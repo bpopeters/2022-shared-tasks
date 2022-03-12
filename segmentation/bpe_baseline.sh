@@ -13,9 +13,10 @@ spm_train --input $TRAIN --model_prefix bpe.$VOCAB --vocab_size $VOCAB --charact
 # segment dev set
 DEV=$NAME.dev.tmp
 cut -f 1 $DATA.dev.tsv > $DEV
-spm_encode --model bpe.$VOCAB.model --output_format piece < $DEV | python spm2out.py > $DEV.out
+spm_encode --model bpe.$VOCAB.model --output_format piece < $DEV | python spm2out.py > $DEV.bpe.out
 
 # evaluate
+python evaluate.py $DATA.dev.tsv $DEV.bpe.out
 ERRORS=$( cut -f 2 $DATA.dev.tsv | diff -y - eng.word.dev.tmp.out | grep "|" | wc -l )
 TOTAL=$( wc -l eng.word.dev.tmp.out)
 echo $ERRORS

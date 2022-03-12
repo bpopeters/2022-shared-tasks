@@ -6,7 +6,7 @@ NAME=$( basename $DATA )
 TRAIN=$NAME.train.tmp
 cut -f 1 $DATA.train.tsv > $TRAIN
 
-morfessor-train $TRAIN
+morfessor-train -s $NAME.bin $TRAIN
 
 # segment dev set
 DEV=$NAME.dev.tmp
