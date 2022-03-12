@@ -18,9 +18,9 @@ decode() {
     OUT="${CP}/${MODE}.out"
     PRED="${CP}/${MODE}.pred"
     # Makes raw predictions.
-    fairseq-interactive data-bin/eng.word/ --beam 5 --source-lang eng.word.src --target-lang eng.word.tgt --path fairseq-checkpoints/baseline/checkpoint_last.pt < dev.eng.word.src
     fairseq-interactive \
         "data-bin/${NAME}" \
+        --buffer-size 256 \
         --source-lang="${NAME}.src" \
         --target-lang="${NAME}.tgt" \
         --path="${CHECKPOINT}" \
