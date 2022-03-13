@@ -9,7 +9,7 @@ decode() {
     local -r MODE="$1"; shift
     # Fairseq insists on calling the dev-set "valid"; hack around this.
     local -r FAIRSEQ_MODE="${MODE/dev/valid}"
-    CHECKPOINT="fairseq-checkpoints/baseline/checkpoint_last.pt"
+    CHECKPOINT="${CP}/checkpoint_last.pt"
     RES="${CHECKPOINT/.pt/-${MODE}.res}"
     # Don't overwrite an existing prediction file.
     if [[ -f "${RES}" ]]; then
