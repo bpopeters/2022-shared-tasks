@@ -1,5 +1,9 @@
 readonly DATA=$1  # example: 2022-shared-tasks/segmentation/eng.word
 NAME=$( basename $DATA )  # i.e. eng.word
+EMB=$2
+HID=$3
+LAYERS=$4
+DROPOUT=$5
 
 # Adapted from the SIGMORPHON 2020 script by Kyle Gorman and Shijie Wu.
 
@@ -14,10 +18,6 @@ readonly LR=1e-3
 readonly CLIP_NORM=1.
 readonly MAX_UPDATE=20000
 readonly SAVE_INTERVAL=5
-readonly EED=256
-readonly EHS=256
-readonly DED=256
-readonly DHS=256
 
 # Hyperparameters to be tuned.
 readonly BATCH=256
@@ -34,12 +34,14 @@ train() {
         --seed="${SEED}" \
         --arch=lstm \
         --encoder-bidirectional \
+        --encoder-layers "${LAYERS}" \
+        --decoder-layers "${LAYERS}" \
         --dropout="${DROPOUT}" \
-        --encoder-embed-dim="${EED}" \
-        --encoder-hidden-size="${EHS}" \
-        --decoder-embed-dim="${DED}" \
-        --decoder-out-embed-dim="${DED}" \
-        --decoder-hidden-size="${DHS}" \
+        --encoder-embed-dim="${EMB}" \
+        --encoder-hidden-size="${HID}" \
+        --decoder-embed-dim="${EMB}" \
+        --decoder-out-embed-dim="${EMB}" \
+        --decoder-hidden-size="${HID}" \
         --share-decoder-input-output-embed \
         --criterion="${CRITERION}" \
         --label-smoothing="${LABEL_SMOOTHING}" \
@@ -52,4 +54,4 @@ train() {
         "$@"   # In case we need more configuration control.
 }
 
-train "fairseq-checkpoints/baseline"
+train "fairseq-checkpoints/${NAME}-xent-${EMB}-${HID}-${LAYERS}-${DROPOUT}"
