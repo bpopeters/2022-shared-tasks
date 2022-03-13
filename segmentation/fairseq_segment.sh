@@ -1,5 +1,6 @@
 readonly DATA=$1  # example: 2022-shared-tasks/segmentation/eng.word
 NAME=$( basename $DATA )  # i.e. eng.word
+readonly PATH=$2
 
 readonly BEAM=5
 
@@ -32,4 +33,4 @@ decode() {
     python evaluate.py "${DATA}.dev.tsv" "${PRED}"
 }
 
-decode "fairseq-checkpoints/baseline" dev
+decode $PATH dev
