@@ -1,6 +1,6 @@
 readonly DATA=$1  # example: 2022-shared-tasks/segmentation/eng.word
 NAME=$( basename $DATA )  # i.e. eng.word
-readonly PATH=$2
+readonly MODEL_PATH=$2
 
 readonly BEAM=5
 
@@ -33,4 +33,4 @@ decode() {
     python evaluate.py "${DATA}.dev.tsv" "${PRED}"
 }
 
-decode $PATH dev
+decode $MODEL_PATH dev
