@@ -25,7 +25,7 @@ decode() {
         --target-lang="${NAME}.tgt" \
         --path="${CHECKPOINT}" \
         --beam="${BEAM}" \
-        < "${NAME}" > "${OUT}"
+        < "dev.${NAME}.src" > "${OUT}"
     # Extracts the predictions into a TSV file.
     cat "${OUT}" | grep '^H-' | cut -f3 | python postprocess_fairseq.py > $PRED
     # Applies the evaluation script to the TSV file.
