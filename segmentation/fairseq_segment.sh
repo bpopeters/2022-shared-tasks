@@ -1,6 +1,7 @@
 readonly DATA=$1  # example: 2022-shared-tasks/segmentation/eng.word
 NAME=$( basename $DATA )  # i.e. eng.word
 readonly MODEL_PATH=$2
+readonly ENTMAX_ALPHA=$3
 
 readonly BEAM=5
 
@@ -26,6 +27,7 @@ decode() {
         --path="${CHECKPOINT}" \
         --gen-subset="${FAIRSEQ_MODE}" \
         --beam="${BEAM}" \
+        --alpha="${ENTMAX_ALPHA}" \
         --no-progress-bar \
         > "${OUT}"
     # Extracts the predictions into a TSV file.
