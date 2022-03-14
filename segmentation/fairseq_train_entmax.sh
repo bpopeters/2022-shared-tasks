@@ -44,7 +44,7 @@ train() {
         --decoder-hidden-size="${HID}" \
         --share-decoder-input-output-embed \
         --criterion="${CRITERION}" \
-        --entmax-alpha="${ENTMAX_ALPHA}" \
+        --loss-alpha="${ENTMAX_ALPHA}" \
         --optimizer="${OPTIMIZER}" \
         --lr="${LR}" \
         --clip-norm="${CLIP_NORM}" \
