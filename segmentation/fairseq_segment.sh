@@ -28,7 +28,6 @@ decode() {
         --gen-subset="${FAIRSEQ_MODE}" \
         --beam="${BEAM}" \
         --alpha="${ENTMAX_ALPHA}" \
-        --no-progress-bar \
         > "${OUT}"
     # Extracts the predictions into a TSV file.
     cat "${OUT}" | grep -P '^H-'  | cut -c 3- | sort -n -k 1 | awk -F "\t" '{print $NF}' | python postprocess_fairseq.py > $PRED
