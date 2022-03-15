@@ -5,12 +5,12 @@ tsv() {
     for TASK in train dev ; do
         for TSV in "${DATA}.${TASK}.tsv"; do
             # Separates graphemes with spaces.
-            grep "1[01][01]" "${TSV}" | cut -f 1 | \
+            grep "[01][01]1" "${TSV}" | cut -f 1 | \
                 sed 's/./& /g' \
                 > "${TASK}.${NAME}".src
             # segments are a little more complicated here.
             # damn I'd rather do this in python
-            grep "1[01][01]" "${TSV}" | cut -f2 | \
+            grep "[01][01]1" "${TSV}" | cut -f2 | \
                 python tokenize_segments.py > "${TASK}.${NAME}".tgt
         done
     done
