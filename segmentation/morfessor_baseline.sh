@@ -14,4 +14,10 @@ cut -f 1 $DATA.dev.tsv | python preprocess_morfessor.py > $DEV
 
 # problem with this is that it incorrectly handles entries that have a space in
 # them. How do we handle that? One possibility is to replace spaces with "_"
-morfessor-segment $DEV -l $NAME.bin | python postprocess_morfessor.py > $DEV.out
+morfessor-segment $DEV -l $NAME.bin | python postprocess_morfessor.py > $NAME.mor.out
+
+cut -f 1 $DATA.dev.tsv | paste - $NAME.spm.out > guess
+
+python 2022SegmentationST/evaluation/evaluate_word.py --gold $DATA.dev.tsv --guess guess
+
+rm guess

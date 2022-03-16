@@ -13,10 +13,15 @@ spm_train --input $TRAIN --model_prefix spm.$VOCAB --vocab_size $VOCAB --charact
 # segment dev set
 DEV=$NAME.dev.tmp
 cut -f 1 $DATA.dev.tsv > $DEV
-spm_encode --model spm.$VOCAB.model --output_format piece < $DEV | python spm2out.py > $DEV.spm.out
+spm_encode --model spm.$VOCAB.model --output_format piece < $DEV | python spm2out.py > $NAME.spm.out
 
 # evaluate
-python evaluate.py $DATA.dev.tsv $DEV.spm.out
+paste $DEV $NAME.spm.out > guess
+
+python 2022SegmentationST/evaluation/evaluate_word.py --gold $DATA.dev.tsv --guess guess
+
+rm guess
+rm *.tmp
 
 # copy unsegmented:
 # 48790
