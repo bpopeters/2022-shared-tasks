@@ -21,7 +21,7 @@ fairseq-interactive \
 
 # build the dictionary
 paste other-data/dev.eng other-data/dev.eng.segmented > other-data/segment_dict.tsv
-python segment_table.py other/data_segment_dict.tsv < other-data/europarl/Europarl.en-hu.en > other-data/europarl.en-hu.en.segmented
+python segment_table.py other/data_segment_dict.tsv < other-data/flores/eng.dev > other-data/flores.eng.segmented
 
 # is it feasible to do this on a training set? I believe so. The English europarl
 # set has 75k unique types (not too different from the task dev set. The
