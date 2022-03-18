@@ -4,8 +4,8 @@ EMB=$2
 HID=$3
 LAYERS=$4
 DROPOUT=$5
-ENTMAX_ALPHA=$6
-BATCH=$7
+BATCH=$6
+ENTMAX_ALPHA=$7
 
 # Adapted from the SIGMORPHON 2020 script by Kyle Gorman and Shijie Wu.
 
