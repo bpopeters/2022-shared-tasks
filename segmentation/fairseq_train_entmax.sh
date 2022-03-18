@@ -5,6 +5,7 @@ HID=$3
 LAYERS=$4
 DROPOUT=$5
 ENTMAX_ALPHA=$6
+BATCH=$7
 
 # Adapted from the SIGMORPHON 2020 script by Kyle Gorman and Shijie Wu.
 
@@ -16,12 +17,12 @@ readonly CRITERION=entmax_loss
 readonly OPTIMIZER=adam
 readonly LR=1e-3
 readonly CLIP_NORM=1.
-readonly MAX_UPDATE=20000
-readonly SAVE_INTERVAL=5
+readonly MAX_UPDATE=50000
+readonly SAVE_INTERVAL=1
+readonly SCHEDULER=reduce_lr_on_plateau
+readonly PATIENCE=5
 
-# Hyperparameters to be tuned.
-readonly BATCH=256
-readonly DROPOUT=.3
+MODEL_DIR="fairseq-checkpoints/${NAME}-entmax-${EMB}-${HID}-${LAYERS}-${DROPOUT}-${BATCH}-${ENTMAX_ALPHA}"
 
 train() {
     local -r CP="$1"; shift
@@ -30,7 +31,6 @@ train() {
         --save-dir="${CP}" \
         --source-lang="${NAME}.src" \
         --target-lang="${NAME}.tgt" \
-        --disable-validation \
         --seed="${SEED}" \
         --arch=lstm \
         --encoder-bidirectional \
@@ -47,11 +47,14 @@ train() {
         --loss-alpha="${ENTMAX_ALPHA}" \
         --optimizer="${OPTIMIZER}" \
         --lr="${LR}" \
+        --lr-scheduler="${SCHEDULER}" \
         --clip-norm="${CLIP_NORM}" \
         --batch-size="${BATCH}" \
         --max-update="${MAX_UPDATE}" \
         --save-interval="${SAVE_INTERVAL}" \
+        --patience="${PATIENCE}" \
+        --no-epoch-checkpoints \
         "$@"   # In case we need more configuration control.
 }
 
-train "fairseq-checkpoints/${NAME}-entmax-${EMB}-${HID}-${LAYERS}-${DROPOUT}-${ENTMAX_ALPHA}"
+train $MODEL_DIR
