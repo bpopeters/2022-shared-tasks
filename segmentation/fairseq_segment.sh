@@ -11,12 +11,6 @@ decode() {
     # Fairseq insists on calling the dev-set "valid"; hack around this.
     local -r FAIRSEQ_MODE="${MODE/dev/valid}"
     CHECKPOINT="${CP}/checkpoint_best.pt"
-    RES="${CHECKPOINT/.pt/-${MODE}.res}"
-    # Don't overwrite an existing prediction file.
-    if [[ -f "${RES}" ]]; then
-        continue
-    fi
-    echo "Evaluating into ${RES}"
     OUT="${CP}/${MODE}.out"
     PRED="${CP}/${MODE}.pred"
     # Makes raw predictions.
