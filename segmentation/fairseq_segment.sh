@@ -28,7 +28,7 @@ decode() {
     cut -f 1 "${DATA}.dev.tsv" | paste - $PRED > "${CP}/${MODE}.guess"
     # Applies the evaluation script to the TSV file.
     python 2022SegmentationST/evaluation/evaluate_word.py --gold "${DATA}.dev.tsv" --guess "${CP}/${MODE}.guess" > "${CP}/${MODE}.results"
-    python 2022SegmentationST/evaluation/evaluate_word.py --gold "${DATA}.dev.tsv" --guess "${CP}/${MODE}.guess" --category > "${CP}/${MODE}.tagged.results"
+    # python 2022SegmentationST/evaluation/evaluate_word.py --gold "${DATA}.dev.tsv" --guess "${CP}/${MODE}.guess" --category > "${CP}/${MODE}.tagged.results"
 }
 
 decode $MODEL_PATH dev
