@@ -44,8 +44,8 @@ bin() {
         --tokenizer=space \
         --thresholdsrc=1 \
         --thresholdtgt=1 \
-        --srcdict "2022-shared-tasks/segmentation/data-bin/eng.word/dict.eng.word.src.txt"  \
-        --tgtdict "2022-shared-tasks/segmentation/data-bin/eng.word/dict.eng.word.tgt.txt" \
+        --srcdict "data-bin/eng.word/dict.eng.word.src.txt"  \
+        --tgtdict "data-bin/eng.word/dict.eng.word.tgt.txt" \
         --destdir="data-bin/mini-data/${NAME}-${CUR_SIZE}"
 }
 
