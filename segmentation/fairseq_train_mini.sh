@@ -1,7 +1,5 @@
 NAME="eng.word"
 
-eng.word-entmax-512-1024-2-0.3-256-1.5
-
 EMB=512
 HID=1024
 LAYERS=2
