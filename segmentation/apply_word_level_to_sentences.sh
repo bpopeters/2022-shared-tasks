@@ -26,7 +26,7 @@ fairseq-interactive \
 sed "s/ //g" eng.sentence.dev.src | paste - eng.sentence.dev.values > eng.sentence.dev.dict
 cut -f 1 "${DATA}.dev.tsv" | python segment_table.py eng.sentence.dev.dict > eng.sentence.dev.pred
 
-cut -f 1 "${DATA}.dev.tsv" | paste -eng.sentence.dev.pred > eng.sentence.guess
+cut -f 1 "${DATA}.dev.tsv" | paste - eng.sentence.dev.pred > eng.sentence.guess
 
 python 2022SegmentationST/evaluation/evaluate_word.py --gold $DATA.dev.tsv --guess eng.sentence.guess
 
