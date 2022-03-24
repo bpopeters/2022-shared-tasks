@@ -1,4 +1,4 @@
-WORD_MODEL="eng.word-entmax-512-1024-2-0.3-256-1.5/checkpoint_best.pt"
+WORD_MODEL="fairseq-checkpoints/eng.word-entmax-512-1024-2-0.3-256-1.5/checkpoint_best.pt"
 
 DATA="2022SegmentationST/data/eng.sentence"
 
