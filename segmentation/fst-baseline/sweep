@@ -1,0 +1,40 @@
+#!/bin/bash
+
+set -eou pipefail
+
+TRAIN_TSV=$1
+DEV_TSV=$2
+
+PREFIX=$3
+
+readonly SEED=1917
+readonly RANDOM_STARTS=10
+
+mkdir -p $PREFIX
+
+# Output symbols.
+# need to fix this by postprocessing column 2 (see the other tasks we have)
+# but also, what do we do about column 1?
+
+# currently I'm including dev when I create the vocabulary. This shouldn't make
+# a difference, but it might.
+cut -f 1 "${TRAIN_TSV}" | python tok.py > train.words.tmp
+cut -f 2 "${TRAIN_TSV}" | python tok.py > train.segments.tmp
+cut -f 1 "${DEV_TSV}" | python tok.py > dev.words.tmp
+cut -f 2 "${DEV_TSV}" | python tok.py > dev.segments.tmp
+
+cat train.words.tmp train.segments.tmp dev.words.tmp dev.segments.tmp \
+    | ngramsymbols \
+    > "${PREFIX}/chars.sym"
+
+paste train.words.tmp train.segments.tmp > "${PREFIX}/train.tsv"
+paste dev.words.tmp dev.segments.tmp > "${PREFIX}/dev.tsv"
+
+# Alignments.
+python align.py \
+    --seed="${SEED}" \
+    --random_starts="${RANDOM_STARTS}" \
+    --tsv_path="${PREFIX}/train.tsv" \
+    --output_token_type="${PREFIX}/chars.sym" \
+    --encoder_path="${PREFIX}/model.enc" \
+    --far_path="${PREFIX}/model.far"
