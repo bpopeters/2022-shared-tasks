@@ -14,7 +14,7 @@ cut -f 1 "${DATA}.dev.tsv" | python unique_types.py | sed 's/./& /g' > $NAME.dev
 
 # - segment these types (this will require preprocessing them first)
 fairseq-interactive \
-    data-bin/$NAME \
+    data-bin/$LANG.word \
     --path $WORD_MODEL \
     --source-lang $LANG.word.src \
     --target-lang $LANG.word.tgt \
