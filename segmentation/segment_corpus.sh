@@ -1,30 +1,31 @@
 MODEL=$1
 IN_CORPUS=$2
 OUT_CORPUS=$3
-NAME=$OUT_CORPUS
+NAME=$4  # e.g. eng.word
+EXPNAME=$OUT_CORPUS
 
 # General idea:
 # - get unique types from corpus (applying some kind of length filtering)
 # fix these paths
 # python unique_types.py < other-data/europarl/Europarl.en-hu.en > other-data/train.eng.words.src
-python unique_types.py < $IN_CORPUS > $NAME.uniqs.tmp
+python unique_types.py < $IN_CORPUS > $EXPNAME.uniqs.tmp
 
 # - segment these types (this will require preprocessing them first)
 fairseq-interactive \
-    data-bin/eng.word \
+    data-bin/$NAME \
     --path $MODEL \
-    --source-lang eng.word.src \
-    --target-lang eng.word.tgt \
+    --source-lang $NAME.src \
+    --target-lang $NAME.tgt \
     --beam 5 \
     --alpha 1.5  \
     --batch-size 256 \
-    --buffer-size 256 < $NAME.uniqs.tmp | \
+    --buffer-size 256 < $EXPNAME.uniqs.tmp | \
     grep -P '^H-'  | cut -c 3- | awk -F "\t" '{print $NF}' | \
-    python postprocess_fairseq.py > $NAME.uniqs.segmented
+    python postprocess_fairseq.py > $EXPNAME.uniqs.segmented
 
 # build the dictionary
-sed "s/ //g" $NAME.uniqs.tmp | paste - $NAME.uniqs.segmented > $NAME.segment_dict.tsv
-python segment_table.py $NAME.segment_dict.tsv < $IN_CORPUS > $OUT_CORPUS
+sed "s/ //g" $EXPNAME.uniqs.tmp | paste - $EXPNAME.uniqs.segmented > $EXPNAME.segment_dict.tsv
+python segment_table.py $EXPNAME.segment_dict.tsv < $IN_CORPUS > $OUT_CORPUS
 
 # is it feasible to do this on a training set? I believe so. The English europarl
 # set has 75k unique types (not too different from the task dev set. The
