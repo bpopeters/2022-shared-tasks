@@ -10,7 +10,7 @@ LANG=$( basename $DATA .sentence)
 # fix these paths
 # python unique_types.py < other-data/europarl/Europarl.en-hu.en > other-data/train.eng.words.src
 
-cut -f 1 "${DATA}.dev.tsv" | python unique_types.py | sed 's/./& /g' > $NAME.dev.src
+cut -f 1 "${DATA}.dev.tsv" | python unique_types.py  > $NAME.dev.src
 
 # - segment these types (this will require preprocessing them first)
 fairseq-interactive \
