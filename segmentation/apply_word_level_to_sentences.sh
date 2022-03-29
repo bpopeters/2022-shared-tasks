@@ -23,7 +23,7 @@ fairseq-interactive \
     --batch-size 256 \
     --buffer-size 256 < "${NAME}.dev.src" | \
     grep -P '^H-'  | cut -c 3- | awk -F "\t" '{print $NF}' | \
-    python postprocess_fairseq.py > $NAME.dev.values
+    python postprocess_fairseq.py "word" > $NAME.dev.values
 
 # build the dictionary
 sed "s/ //g" $NAME.dev.src | paste - $NAME.dev.values > $NAME.dev.dict
