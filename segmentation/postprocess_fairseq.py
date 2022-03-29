@@ -11,10 +11,11 @@ def postprocess_word(line):
 
 
 def postprocess_sentence(line):
-    no_space = "".join(line.strip().split()) + "\n"
-    out_line = re.sub(r'_', ' ', no_space)
-    out_line = re.sub(r'|', ' @@', out_line)
-    return out_line
+    line = "".join(line.strip().split()) + "\n"
+    line = line.replace('|', ' @@')
+    line = line.replace('_', ' ')
+    # line = re.sub(r'|', ' @@', line)
+    return line
 
 def main():
     name = sys.argv[1]
