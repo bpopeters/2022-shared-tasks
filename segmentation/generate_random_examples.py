@@ -40,7 +40,6 @@ def main(args):
 
     for _ in range(args.n):
         # generate an example and write it to sys.stdout
-        # lots of junk in the eng.word vocab!
         ex = generate_example(vocab, class_weights, args.min_len, args.max_len)
         sys.stdout.write("\t".join([ex, ex]) + "\n")
 
