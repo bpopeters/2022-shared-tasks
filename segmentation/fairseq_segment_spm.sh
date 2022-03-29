@@ -2,6 +2,7 @@ readonly DATA=$1  # example: 2022-shared-tasks/data/eng.word
 NAME=$( basename $DATA )  # i.e. eng.word
 readonly MODEL_PATH=$2
 readonly ENTMAX_ALPHA=$3
+readonly GOLD_PATH=$4
 
 readonly BEAM=5
 
@@ -26,10 +27,10 @@ decode() {
 	--batch-size 256 \
         > "${OUT}"
     # Extracts the predictions into a TSV file.
-    cat "${OUT}" | grep -P '^H-'  | cut -c 3- | sort -n -k 1 | awk -F "\t" '{print $NF}' > $PRED
+    cat "${OUT}" | grep -P '^H-'  | cut -c 3- | sort -n -k 1 | awk -F "\t" '{print $NF}' | sed "s/ //g" | sed "s/▁/ /g" | sed "s/^ //g" > $PRED
     cut -f 1 "${DATA}.dev.tsv" | paste - $PRED > "${CP}/${MODE}.guess"
     # Applies the evaluation script to the TSV file.
-    python 2022SegmentationST/evaluation/evaluate_word.py --gold "${DATA}.dev.tsv" --guess "${CP}/${MODE}.guess" > "${CP}/${MODE}.results"
+    python 2022SegmentationST/evaluation/evaluate_word.py --gold $GOLD_PATH --guess "${CP}/${MODE}.guess" > "${CP}/${MODE}.results"
     # python 2022SegmentationST/evaluation/evaluate_word.py --gold "${DATA}.dev.tsv" --guess "${CP}/${MODE}.guess" --category > "${CP}/${MODE}.tagged.results"
 }
 
