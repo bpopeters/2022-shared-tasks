@@ -6,10 +6,13 @@ NAME=$( basename $DATA )
 VOCAB=$2
 OUT_FORMAT=$3  # piece or sample_piece
 
+SAMPLE_TIMES=$4
+
 mkdir -p augmented-data/spm/$OUT_FORMAT
-OUT_DATA=augmented-data/spm/$OUT_FORMAT/$NAME-$VOCAB
+OUT_DATA=augmented-data/spm/$OUT_FORMAT/$NAME-$VOCAB-$SAMPLE_TIMES
 
 SPM_DATA=$OUT_DATA.train.tgt.tmp  # also consider training with an external corpus
+cut -f 2 $DATA.train.tsv > $SPM_DATA
 
 train() {
     local -r SPM_TRAINING_DATA="$1"; shift # was $SPM_DATA
@@ -39,16 +42,13 @@ encode() {
     rm $OUT_DATA.*.tmp
 }
 
-cut -f 1 $DATA.train.tsv > $OUT_DATA.train.src.tmp
-cut -f 2 $DATA.train.tsv > $SPM_DATA
-cut -f 3 $DATA.train.tsv > $OUT_DATA.train.tags.tmp
-
-cut -f 1 $DATA.dev.tsv > $OUT_DATA.dev.src.tmp
-cut -f 2 $DATA.dev.tsv > $OUT_DATA.dev.tgt.tmp
-cut -f 3 $DATA.dev.tsv > $OUT_DATA.dev.tags.tmp
-
 train $SPM_DATA $OUT_DATA.spm $VOCAB
-encode $OUT_DATA.spm.model $OUT_FORMAT $DATA.train.tsv > $OUT_DATA.train.tsv
+
+rm -f $OUT_DATA.train.tsv  # avoid overwriting
+for i in $( seq 1 $SAMPLE_TIMES ) ; do
+    encode $OUT_DATA.spm.model $OUT_FORMAT $DATA.train.tsv >> $OUT_DATA.train.tsv
+done
+
 encode $OUT_DATA.spm.model piece $DATA.dev.tsv > $OUT_DATA.dev.tsv
 
 
