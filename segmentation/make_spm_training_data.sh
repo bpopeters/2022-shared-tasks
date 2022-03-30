@@ -37,7 +37,8 @@ encode() {
     cut -f 3 $TSV > $TAGS
 
     # to be clear, the TGT is what gets segmented
-    cat $TGT | spm_encode --model $MODEL --output_format $FORMAT | paste $SRC - $TAGS
+    # hardcoding alpha...not great, probably. I didn't use this for the original swr-8000
+    cat $TGT | spm_encode --model $MODEL --output_format $FORMAT --alpha 0.1 | paste $SRC - $TAGS
     # spm_encode --model $OUT_DATA.spm.model --output_format piece < $OUT_DATA.dev.tgt.tmp | paste $OUT_DATA.dev.src.tmp - $OUT_DATA.dev.tags.tmp > $OUT_DATA.dev.tsv
     rm $OUT_DATA.*.tmp
 }
