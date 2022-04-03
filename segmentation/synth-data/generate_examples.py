@@ -10,27 +10,29 @@ to the SIGMORPHON 2019 shared task:
 
 import sys
 import argparse
-from itertools import chain, groupby
-from collections import Counter
+from itertools import chain
+from collections import Counter, defaultdict
 
 import numpy as np
 
 import align
 
 
-def read_data(filename):
-    inputs = []
-    outputs = []
-    with open(filename) as f:
+def read_tsv(path, category=False):
+    # tsv without header
+    col_names = ["word", "segments"]
+    if category:
+        col_names.append("category")
+    data = {name: [] for name in col_names}
+    with open(path) as f:
         for line in f:
-            line = line.strip()
-            if line:
-                fields = line.split("\t")
-                src, trg = fields[:2]
-                inputs.append(src.strip())
-                outputs.append(trg.strip().replace("@@", "|"))
-
-    return inputs, outputs
+            fields = line.rstrip("\n").split("\t")
+            for name, field in zip(col_names, fields):
+                if name == "segments":
+                    field = field.replace(' @@', '|')
+                    field = field.replace(' ', '|')
+                data[name].append(field)
+    return data
 
 
 def joint_segments(src, tgt):
@@ -40,7 +42,7 @@ def joint_segments(src, tgt):
     """
     # this might not be quite correct: see scummered
     start_ix = [0] + [i for i, char in enumerate(tgt) if char == "|"]
-    end_ix = [i - 1 for i in start_ix[1:]] + [len(tgt)]
+    end_ix = [i for i in start_ix[1:]] + [len(tgt)]
     segments = []
     for start, end in zip(start_ix, end_ix):
         # ok, nice.
@@ -76,7 +78,8 @@ def make_vocab(src, tgt):
     src_vocab = Counter(chain(*src))
     tgt_vocab = Counter(chain(*tgt))
     common_keys = set(src_vocab) & set(tgt_vocab)
-    common_keys.remove(" ")
+    if " " in common_keys:
+        common_keys.remove(" ")
     merged = Counter({k: src_vocab[k] + tgt_vocab[k] for k in common_keys})
     vocab, vocab_counts = zip(*merged.most_common())
     vocab_counts = np.array(vocab_counts)
@@ -120,6 +123,7 @@ def main():
     parser.add_argument("--examples", default=10000, type=int,
                         help="number of examples to hallucinate (def: 10000)")
     parser.add_argument("--batch_size", default=1000, type=int)
+    parser.add_argument("--category", action="store_true")
     args = parser.parse_args()
 
     data_path = args.datapath
@@ -127,7 +131,9 @@ def main():
     N = args.examples
 
     # read in a tsv of examples (todo: handle categories)
-    true_src, true_trg = read_data(data_path)
+    data = read_tsv(data_path, category=args.category)
+    true_src = data["word"]
+    true_trg = data["segments"]
     vocab, vocab_p = make_vocab(true_src, true_trg)
 
     # learn alignments between src and tgt segments
@@ -136,14 +142,21 @@ def main():
     # turn alignments between specific strings into
     # skeletons that new examples can be generated from
     # It would be nice to stratify this by category as well.
-    unique_skeletons = Counter(make_skeleton(ex) for ex in aligned_segments)
-    skeletons, skeleton_counts = zip(*unique_skeletons.most_common())
+    skeletons = [make_skeleton(ex) for ex in aligned_segments]
+    '''
+    by_cat = defaultdict(Counter)
+    for sk, category in zip(skeletons, data["category"]):
+        by_cat[category][sk] += 1
+    '''
+
+    unique_skeletons = Counter(skeletons)
+    sorted_skeletons, skeleton_counts = zip(*unique_skeletons.most_common())
     skeleton_counts = np.array(skeleton_counts)
     skeleton_p = skeleton_counts / skeleton_counts.sum()
 
     for i in range(N // args.batch_size):
         batch = generate_batch(
-            args.batch_size, vocab, vocab_p, skeletons, skeleton_p
+            args.batch_size, vocab, vocab_p, sorted_skeletons, skeleton_p
         )
         for ex in batch:
             sys.stdout.write("\t".join(ex) + "\n")
