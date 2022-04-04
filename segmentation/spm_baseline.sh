@@ -18,7 +18,7 @@ spm_encode --model spm.$VOCAB.model --output_format piece < $DEV | python spm2ou
 # evaluate
 paste $DEV $NAME.spm.out > guess
 
-python 2022SegmentationST/evaluation/evaluate_word.py --gold $DATA.dev.tsv --guess guess
+python 2022SegmentationST/evaluation/evaluate.py --gold $DATA.dev.tsv --guess guess
 
 rm guess
 rm *.tmp

@@ -31,7 +31,7 @@ cut -f 1 "${DATA}.dev.tsv" | python segment_table.py $NAME.dev.dict > $NAME.dev.
 
 cut -f 1 "${DATA}.dev.tsv" | paste - $NAME.dev.pred > $NAME.guess
 
-python 2022SegmentationST/evaluation/evaluate_word.py --gold $DATA.dev.tsv --guess $NAME.guess
+python 2022SegmentationST/evaluation/evaluate.py --gold $DATA.dev.tsv --guess $NAME.guess
 
 # is it feasible to do this on a training set? I believe so. The English europarl
 # set has 75k unique types (not too different from the task dev set. The

@@ -16,4 +16,4 @@ bash morfessor_segment_corpus.sh $NAME.bin $DEV > $NAME.mor.out
 
 paste $DEV $NAME.mor.out > $NAME.mor.guess
 
-python 2022SegmentationST/evaluation/evaluate_word.py --gold $DATA.dev.tsv --guess $NAME.mor.guess
+python 2022SegmentationST/evaluation/evaluate.py --gold $DATA.dev.tsv --guess $NAME.mor.guess

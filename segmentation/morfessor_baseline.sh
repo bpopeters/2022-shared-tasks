@@ -18,4 +18,4 @@ morfessor-segment $DEV -l $NAME.bin | python postprocess_morfessor.py > $NAME.mo
 
 cut -f 1 $DATA.dev.tsv | paste - $NAME.mor.out > $NAME.mor.guess
 
-python 2022SegmentationST/evaluation/evaluate_word.py --gold $DATA.dev.tsv --guess $NAME.mor.guess
+python 2022SegmentationST/evaluation/evaluate.py --gold $DATA.dev.tsv --guess $NAME.mor.guess
