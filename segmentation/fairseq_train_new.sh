@@ -46,6 +46,7 @@ train() {
         --loss-alpha="${ENTMAX_ALPHA}" \
         --optimizer="${OPTIMIZER}" \
         --lr="${LR}" \
+        --lr-shrink=0.5 \
         --lr-scheduler="${SCHEDULER}" \
         --clip-norm="${CLIP_NORM}" \
         --batch-size="${BATCH}" \
@@ -53,10 +54,6 @@ train() {
         --patience="${PATIENCE}" \
         --no-epoch-checkpoints \
         --no-last-checkpoints \
-        --validate-interval 9999 \  # because we ONLY want to validate every 2000 steps
-        --validate-interval-updates 2000 \
-        --save-interval-updates 2000 \
-        --keep-interval-updates 1 \
         "$@"   # In case we need more configuration control.
 }
 
