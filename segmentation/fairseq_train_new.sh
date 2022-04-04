@@ -15,14 +15,13 @@ set -euo pipefail
 readonly SEED=1917
 readonly CRITERION=entmax_loss
 readonly OPTIMIZER=adam
-readonly LR=1e-3  # this needs to be an argument
 readonly CLIP_NORM=1.
 readonly MAX_UPDATE=100000
 readonly SCHEDULER=reduce_lr_on_plateau
 readonly PATIENCE=5
 readonly DROPOUT=0.3
 
-MODEL_DIR="new-fairseq-checkpoints/${NAME}-entmax-${EMB}-${HID}-${LAYERS}-${DROPOUT}-${BATCH}-${ENTMAX_ALPHA}"
+MODEL_DIR="new-fairseq-checkpoints/${NAME}-entmax-${EMB}-${HID}-${LAYERS}-${LR}-${BATCH}-${ENTMAX_ALPHA}"
 
 train() {
     local -r CP="$1"; shift
@@ -54,8 +53,10 @@ train() {
         --patience="${PATIENCE}" \
         --no-epoch-checkpoints \
         --no-last-checkpoints \
-        --validate-interval 9999 \
+        --validate-interval 9999 \  # because we ONLY want to validate every 2000 steps
         --validate-interval-updates 2000 \
+        --save-interval-updates 2000 \
+        --keep-interval-updates 1 \
         "$@"   # In case we need more configuration control.
 }
 
