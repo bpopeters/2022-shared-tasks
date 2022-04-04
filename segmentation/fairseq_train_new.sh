@@ -54,7 +54,7 @@ train() {
         --patience="${PATIENCE}" \
         --no-epoch-checkpoints \
         --no-last-checkpoints \
-        --validate-interval 0 \
+        --validate-interval 9999 \
         --validate-interval-updates 2000 \
         "$@"   # In case we need more configuration control.
 }
