@@ -20,8 +20,8 @@ fairseq-interactive \
     --alpha 1.5  \
     --batch-size 256 \
     --buffer-size 256 < $EXPNAME.uniqs.tmp | \
-    grep -P '^H-'  | cut -c 3- | awk -F "\t" '{print $NF}' | \
-    python postprocess_fairseq.py $NAME > $EXPNAME.uniqs.segmented
+    grep -P '^H-'  | cut -c 3- | awk -F "\t" '{print $NF}' > $EXPNAME.uniqs.wtf
+    python postprocess_fairseq.py $NAME < $EXPNAME.uniqs.wtf > $EXPNAME.uniqs.segmented
 
 # build the dictionary
 sed "s/ //g" $EXPNAME.uniqs.tmp | paste - $EXPNAME.uniqs.segmented > $EXPNAME.segment_dict.tsv
