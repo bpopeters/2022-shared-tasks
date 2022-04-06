@@ -8,44 +8,45 @@ TRAIN=$NAME.train.tmp
 cut -f 1 $DATA.train.tsv > $TRAIN
 
 # train spm model
-spm_train --input $TRAIN --model_prefix bpe.$VOCAB --vocab_size $VOCAB --character_coverage 1.0 --model_type bpe
+spm_train --input $TRAIN --model_prefix spm.$VOCAB --vocab_size $VOCAB --character_coverage 1.0 --model_type bpe
 
 # segment dev set
 DEV=$NAME.dev.tmp
 cut -f 1 $DATA.dev.tsv > $DEV
-spm_encode --model bpe.$VOCAB.model --output_format piece < $DEV | python spm2out.py > $DEV.bpe.out
+spm_encode --model spm.$VOCAB.model --output_format piece < $DEV | python spm2out.py > $NAME.spm.out
 
 # evaluate
-python evaluate.py $DATA.dev.tsv $DEV.bpe.out
-ERRORS=$( cut -f 2 $DATA.dev.tsv | diff -y - eng.word.dev.tmp.out | grep "|" | wc -l )
-TOTAL=$( wc -l eng.word.dev.tmp.out)
-echo $ERRORS
-echo $TOTAL
+paste $DEV $NAME.spm.out > guess
+
+python 2022SegmentationST/evaluation/evaluate.py --gold $DATA.dev.tsv --guess guess
+
+rm guess
+rm *.tmp
 
 # copy unsegmented:
 # 48790
 # 57433
 
 # 4000:
-# 56662
+# 51771
 # 57433 eng.word.dev.tmp.out
 
 # 8000:
-# 55875
+# 49105
 # 57433 eng.word.dev.tmp.out
 
 # 16000:
-# 54996
+# 47002
 # 57433 eng.word.dev.tmp.out
 
 # 32000:
-# 54089
+# 45832
 # 57433 eng.word.dev.tmp.out
 
 # 64000:
-# 53476
+# 45226
 # 57433 eng.word.dev.tmp.out
 
 #128000:
-# 53212
+# 45341
 # 57433 eng.word.dev.tmp.out
