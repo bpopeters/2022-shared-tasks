@@ -6,6 +6,7 @@ LAYERS=$4
 DROPOUT=$5
 BATCH=$6
 ENTMAX_ALPHA=$7
+LR_PATIENCE=$8
 
 # Adapted from the SIGMORPHON 2020 script by Kyle Gorman and Shijie Wu.
 
@@ -21,9 +22,8 @@ readonly MAX_UPDATE=50000
 readonly SAVE_INTERVAL=1
 readonly SCHEDULER=reduce_lr_on_plateau
 readonly PATIENCE=10
-readonly LR_PATIENCE=5
 
-MODEL_DIR="fairseq-checkpoints/lr-patience/${NAME}-entmax-${EMB}-${HID}-${LAYERS}-${DROPOUT}-${BATCH}-${ENTMAX_ALPHA}"
+MODEL_DIR="fairseq-checkpoints/lr-patience/${NAME}-entmax-${LR_PATIENCE}-${EMB}-${HID}-${LAYERS}-${DROPOUT}-${BATCH}-${ENTMAX_ALPHA}"
 
 train() {
     local -r CP="$1"; shift
