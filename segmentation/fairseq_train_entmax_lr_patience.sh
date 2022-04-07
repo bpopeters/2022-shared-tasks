@@ -49,6 +49,7 @@ train() {
         --optimizer="${OPTIMIZER}" \
         --lr="${LR}" \
         --lr-scheduler="${SCHEDULER}" \
+        --lr-patience="${LR_PATIENCE}" \
         --clip-norm="${CLIP_NORM}" \
         --batch-size="${BATCH}" \
         --max-update="${MAX_UPDATE}" \
