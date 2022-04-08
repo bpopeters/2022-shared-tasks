@@ -8,8 +8,8 @@ OUT_FORMAT=$3  # piece or sample_piece
 
 SAMPLE_TIMES=$4
 
-mkdir -p augmented-data/spm/$OUT_FORMAT
-OUT_DATA=augmented-data/spm/$OUT_FORMAT/$NAME-$VOCAB-$SAMPLE_TIMES
+mkdir -p augmented-data/spm/$OUT_FORMAT/piece2piece
+OUT_DATA=augmented-data/spm/$OUT_FORMAT/piece2piece/$NAME-$VOCAB-$SAMPLE_TIMES
 
 SRC_SPM_DATA=$OUT_DATA.train.src.tmp
 TGT_SPM_DATA=$OUT_DATA.train.tgt.tmp
