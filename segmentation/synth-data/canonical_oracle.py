@@ -133,18 +133,14 @@ def main():
     aligned_segments = learn_alignments(src, trg)
 
     # now, we need a prediction file
-    guess_data = read_tsv(args.datapath, category=False)
+    guess_data = read_tsv(args.predpath, category=False)
     for src_seq, guess_seq, alignments in zip(src, guess_data["segments"], aligned_segments):
         # do something
         # there is
         surface2canonical = dict(alignments)
         guess_segments = guess_seq.split('|')
-        print(surface2canonical)
-        print(guess_segments)
-        print()
-        canonical = "|".join([surface2canonical.get(g, g) for g in guess_segments])
-        if guess_seq != canonical:
-            print(guess_seq, canonical)
+        canonical = " @@".join([surface2canonical.get(g, g) for g in guess_segments])
+        sys.stdout.write("\t".join([src_seq, canonical]) + "\n")
 
 
 if __name__ == "__main__":
