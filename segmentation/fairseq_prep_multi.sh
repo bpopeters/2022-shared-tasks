@@ -36,7 +36,7 @@ bin() {
         --tokenizer=space \
         --thresholdsrc=0 \
         --thresholdtgt=0 \
-        --destdir="${DEST_DIR}/${LANG}" \
+        --destdir="${DEST_DIR}/${LANG}.surface-${LANG}.segment" \
         --srcdict $DICT \
         --tgtdict $DICT
 }
@@ -52,5 +52,5 @@ cat $DATA/*.word.train.tsv | cut -f 1,2 | sed "s/ @@/|/g" | sed "s/ /_/g" | pyth
 for NAME in ces.word eng.word fra.word hun.word ita.word lat.word rus.word spa.word ;
 do
     tsv $NAME
-    bin $NAME  $DATA_BIN "${DATA_BIN}/multi.fairseq.vocab"
+    bin $NAME $DATA_BIN "${DATA_BIN}/multi.fairseq.vocab"
 done
