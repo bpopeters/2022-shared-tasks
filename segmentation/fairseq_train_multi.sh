@@ -33,7 +33,7 @@ train() {
         --save-dir="${CP}" \
         --task translation_multi_simple_epoch \
         --langs="ces.word,eng.word,fra.word,hun.word,ita.word,lat.word,rus.word,spa.word" \
-        --lang-pairs="ces.word.surface-ces.word.segment,eng.word.surface-eng.word.segment,fra.word.surface-fra.word.segment,hun.word.surface-hun.word.segment,ita.word.surface-ita.word.segment,lat.word.surface-lat.word.segment,rus.word.surface-rus.word.segment,spa.word.surface-spa.word.segment"
+        --lang-pairs="ces.word.surface-ces.word.segment,eng.word.surface-eng.word.segment,fra.word.surface-fra.word.segment,hun.word.surface-hun.word.segment,ita.word.surface-ita.word.segment,lat.word.surface-lat.word.segment,rus.word.surface-rus.word.segment,spa.word.surface-spa.word.segment" \
         --sampling-method="uniform" \
         --encoder-langtok src \
         --seed="${SEED}" \
