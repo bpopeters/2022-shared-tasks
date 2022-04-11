@@ -2,6 +2,7 @@ MODEL=$1
 IN_CORPUS=$2
 OUT_CORPUS=$3
 NAME=$4  # e.g. eng.word
+BEAM=$5
 EXPNAME=$OUT_CORPUS
 
 # General idea:
@@ -16,7 +17,7 @@ fairseq-interactive \
     --path $MODEL \
     --source-lang $NAME.src \
     --target-lang $NAME.tgt \
-    --beam 5 \
+    --beam $BEAM \
     --alpha 1.5  \
     --batch-size 256 \
     --buffer-size 256 < $EXPNAME.uniqs.tmp | \
