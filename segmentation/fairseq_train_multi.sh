@@ -31,8 +31,8 @@ train() {
         "${DATA_BIN}" \
         --save-dir="${CP}" \
         --task translation_multi_simple_epoch \
-        --langs="ces.word.surface,ces.word.segment,eng.word.surface,eng.word.segment,fra.word.surface,fra.word.segment,hun.word.surface,hun.word.segment,ita.word.surface,ita.word.segment,lat.word.surface,lat.word.segment,rus.word.surface,rus.word.segment,spa.word.surface,spa.word.segment" \
-        --lang-pairs="ces.word.surface-ces.word.segment,eng.word.surface-eng.word.segment,fra.word.surface-fra.word.segment,hun.word.surface-hun.word.segment,ita.word.surface-ita.word.segment,lat.word.surface-lat.word.segment,rus.word.surface-rus.word.segment,spa.word.surface-spa.word.segment" \
+        --langs="ces_surface,eng_surface,fra_surface,hun_surface,ita_surface,lat_surface,rus_surface,spa_surface,ces_segment,eng_segment,fra_segment,hun_segment,ita_segment,lat_segment,rus_segment,spa_segment" \
+        --lang-pairs="ces_surface-ces_segment,eng_surface-eng_segment,fra_surface-fra_segment,hun_surface-hun_segment,ita_surface-ita_segment,lat_surface-lat_segment,rus_surface-rus_segment,spa_surface-spa_segment" \
         --sampling-method="uniform" \
         --encoder-langtok src \
         --seed="${SEED}" \
