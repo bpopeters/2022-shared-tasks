@@ -1,6 +1,5 @@
 # will not use DATA like this
 readonly DATA_BIN=$1  # example: 2022-shared-tasks/segmentation/eng.word
-NAME=$( basename $DATA )  # i.e. eng.word
 EMB=$2
 HID=$3
 LAYERS=$4
