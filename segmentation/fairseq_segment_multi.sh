@@ -24,6 +24,7 @@ decode() {
         --alpha="${ENTMAX_ALPHA}" \
         --batch-size 256 \
         --fixed-dictionary "${DATA_BIN}/multi.fairseq.vocab" \
+        --task "translation_multi_simple_epoch" \
         --lang-pairs="ces_surface-ces_segment,eng_surface-eng_segment,fra_surface-fra_segment,hun_surface-hun_segment,ita_surface-ita_segment,lat_surface-lat_segment,rus_surface-rus_segment,spa_surface-spa_segment,ces_segment-ces_surface,eng_segment-eng_surface,fra_segment-fra_surface,hun_segment-hun_surface,ita_segment-ita_surface,lat_segment-lat_surface,rus_segment-rus_surface,spa_segment-spa_surface" \
         > "${OUT}"
 
