@@ -34,9 +34,9 @@ decode() {
     # Extracts the predictions into a TSV file.
     # ok, now what do I do about postprocess_fairseq?
     cat "${OUT}" | grep -P '^H-'  | cut -c 3- | sort -n -k 1 | awk -F "\t" '{print $NF}' | sed "s/ //g" | sed "s/_/ /g" | sed "s/|/ @@/g" > $PRED
-    cut -f 1 $GOLD_PATH | paste - $PRED > "${CP}/${MODE}.guess"
+    cut -f 1 $GOLD_PATH | paste - $PRED > "${CP}/${NAME}.guess"
     # Applies the evaluation script to the TSV file.
-    python 2022SegmentationST/evaluation/evaluate.py --gold $GOLD_PATH --guess "${CP}/${MODE}.guess" > "${CP}/${NAME}.results"
+    python 2022SegmentationST/evaluation/evaluate.py --gold $GOLD_PATH --guess "${CP}/${NAME}.guess" > "${CP}/${NAME}.results"
     # python 2022SegmentationST/evaluation/evaluate.py --gold "${DATA}.dev.tsv" --guess "${CP}/${MODE}.guess" --category > "${CP}/${MODE}.tagged.results"
 }
 
