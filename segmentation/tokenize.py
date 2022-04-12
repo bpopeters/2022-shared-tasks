@@ -66,7 +66,8 @@ def build_spm_tokenizer(pretrained_path, new_prefix, train_iter, vocab_size):
         spm.SentencePieceTrainer.train(
             sentence_iterator=train_iter,
             model_prefix=new_prefix,
-            vocab_size=vocab_size
+            vocab_size=vocab_size,
+            character_coverage=1.0
         )
         spm_model_path = new_prefix + ".model"
     processor = spm.SentencePieceProcessor(model_file=spm_model_path)
@@ -75,13 +76,6 @@ def build_spm_tokenizer(pretrained_path, new_prefix, train_iter, vocab_size):
 
 
 def main(args):
-    # this doesn't actually make much sense if you think about it because
-    # args.corpus is a tsv
-
-    # regardless of tokenization strategy, "|" is the morpheme separator.
-    # should this take paths for all of the corpora? I think not. You can run
-    # the script separately for train/dev/test: if using spm, you can create
-    # the model by running it for the training data first and then
     data = read_tsv(args.corpus)
     src = data["surface"]
     tgt = data["segment"]
@@ -100,7 +94,11 @@ def main(args):
             args.vocab_size
         )
         # todo: character coverage, alpha hyperparameter
-        src_line_tokenizer = partial(src_processor.encode, out_type=str, enable_sampling=args.sample)
+        src_line_tokenizer = partial(
+            src_processor.encode,
+            out_type=str,
+            enable_sampling=args.sample
+        )
     else:
         src_line_tokenizer = character_tokenize
 
@@ -111,11 +109,14 @@ def main(args):
             chain(src, tgt) if args.shared_data else iter(tgt),
             args.vocab_size
         )
-        tgt_line_tokenizer = partial(tgt_processor.encode, out_type=str, enable_sampling=args.sample)
+        tgt_line_tokenizer = partial(
+            tgt_processor.encode,
+            out_type=str,
+            enable_sampling=args.sample
+        )
     else:
         tgt_line_tokenizer = character_tokenize
 
-    # todo: do not hardcode these names
     write_tokenized_corpus(args.out_prefix + ".src", src, src_line_tokenizer)
     write_tokenized_corpus(args.out_prefix + ".tgt", tgt, tgt_line_tokenizer)
 
