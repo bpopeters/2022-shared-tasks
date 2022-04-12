@@ -12,8 +12,9 @@ decode() {
     # Fairseq insists on calling the dev-set "valid"; hack around this.
     local -r FAIRSEQ_MODE="${MODE/dev/valid}"
     CHECKPOINT="${CP}/checkpoint_best.pt"
-    OUT="${CP}/${MODE}.out"
-    PRED="${CP}/${MODE}.pred"
+    NAME=$( basename $GOLD_PATH .tsv)
+    OUT="${CP}/${NAME}.out"
+    PRED="${CP}/${NAME}.pred"
     # Makes raw predictions.
     fairseq-generate \
         $DATA_BIN \
@@ -34,7 +35,7 @@ decode() {
     cat "${OUT}" | grep -P '^H-'  | cut -c 3- | sort -n -k 1 | awk -F "\t" '{print $NF}' | sed "s/ //g" | sed "s/_/ /g" | sed "s/|/ @@/g" > $PRED
     cut -f 1 $GOLD_PATH | paste - $PRED > "${CP}/${MODE}.guess"
     # Applies the evaluation script to the TSV file.
-    python 2022SegmentationST/evaluation/evaluate.py --gold $GOLD_PATH --guess "${CP}/${MODE}.guess" > "${CP}/${MODE}.results"
+    python 2022SegmentationST/evaluation/evaluate.py --gold $GOLD_PATH --guess "${CP}/${MODE}.guess" > "${CP}/${NAME}.results"
     # python 2022SegmentationST/evaluation/evaluate.py --gold "${DATA}.dev.tsv" --guess "${CP}/${MODE}.guess" --category > "${CP}/${MODE}.tagged.results"
 }
 
