@@ -1,8 +1,7 @@
 readonly DATA_BIN=$1
 readonly LANG=$2
-NAME=$( basename $DATA )  # i.e. eng.word
-readonly MODEL_PATH=$2
-readonly ENTMAX_ALPHA=$3
+readonly MODEL_PATH=$3
+readonly ENTMAX_ALPHA=$4
 
 readonly BEAM=5
 
