@@ -15,7 +15,6 @@ Regardless of tokenization strategy, this script replaces " @@" with "|" in the
 target data.
 """
 
-import sys
 import argparse
 from functools import partial
 from itertools import chain
@@ -60,7 +59,7 @@ def main(args):
     # regardless of tokenization strategy, "|" is the morpheme separator.
     # should this take paths for all of the corpora? I think not. You can run
     # the script separately for train/dev/test: if using spm, you can create
-    # the model by running it for the training data first and then 
+    # the model by running it for the training data first and then
     data = read_tsv(args.corpus)
     src = data["surface"]
     tgt = data["segment"]
@@ -68,36 +67,39 @@ def main(args):
     # ok, we have the src and tgt.
     if args.tok_type == "spm":
         # either train a new spm model or load an existing one
-        if args.spm_model is not None:
+        if args.pretrained_spm is not None:
             spm_model_path = args.spm_model
         else:
             # things get interesting here: do we want to train the spm model
             # one one field or both?
+            # TODO: train spm for src, tgt, or both? Train one model on both,
+            # or separate for each?
             spm.SentencePieceTrainer.train(
                 sentence_iterator=chain(src, tgt),
-                model_prefix='m',
+                model_prefix=args.new_spm_prefix,
                 vocab_size=args.vocab_size
             )
-            spm_model_path = "m.model"
+            spm_model_path = args.new_spm_prefix + ".model"
         processor = spm.SentencePieceProcessor(model_file=spm_model_path)
 
         # other line_tokenizer arguments apply as well
-        # should I
         line_tokenizer = partial(processor.encode, out_type=str, enable_sampling=args.sample)
     else:
         line_tokenizer = character_tokenize
 
     # todo: do not hardcode these names
     write_tokenized_corpus(args.out_prefix + ".src", src, line_tokenizer)
-    write_tokenized_corpus(args.out_prefix + "foo.tgt", tgt, line_tokenizer)
+    write_tokenized_corpus(args.out_prefix + ".tgt", tgt, line_tokenizer)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('corpus', help="tsv file from which to build tokenized data")
     parser.add_argument("--tok-type", "-t", default="char", choices=["char", "spm"])
-    parser.add_argument("--spm-model", "-s", default=None,
+    parser.add_argument('--pretrained-spm', default=None,
                         help="Path to existing sentencepiece model")
+    parser.add_argument("--new-spm-prefix", "-s", default="m",
+                        help="Path to write new spm model to")
     parser.add_argument("--vocab-size", "-v", default=1000, type=int,
                         help="Vocab size if training a new sentencepiece model")
     parser.add_argument("--out-prefix", "-o", default="foo")
