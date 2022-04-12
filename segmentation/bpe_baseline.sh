@@ -13,7 +13,7 @@ spm_train --input $TRAIN --model_prefix spm.$VOCAB --vocab_size $VOCAB --charact
 # segment dev set
 DEV=$NAME.dev.tmp
 cut -f 1 $DATA.dev.tsv > $DEV
-spm_encode --model spm.$VOCAB.model --output_format piece < $DEV | python spm2out.py > $NAME.spm.out
+spm_encode --model spm.$VOCAB.model --output_format piece < $DEV | python scripts/spm2out.py > $NAME.spm.out
 
 # evaluate
 paste $DEV $NAME.spm.out > guess

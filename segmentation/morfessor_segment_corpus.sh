@@ -6,11 +6,11 @@
 MODEL=$1
 CORPUS=$2
 
-morfessor-segment $CORPUS -l $MODEL | python label_suffixes.py > segments.tmp
+morfessor-segment $CORPUS -l $MODEL | python scripts/label_suffixes.py > segments.tmp
 
-python line_lengths.py < $CORPUS > lengths.tmp
+python scripts/line_lengths.py < $CORPUS > lengths.tmp
 
 # then, we need to rebuild sentences from that.
-python rebuild_sentences.py lengths.tmp segments.tmp
+python scripts/rebuild_sentences.py lengths.tmp segments.tmp
 
 rm {segments,lengths}.tmp

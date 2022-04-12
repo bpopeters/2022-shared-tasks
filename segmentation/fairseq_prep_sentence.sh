@@ -7,11 +7,11 @@ tsv() {
             # replace spaces with underscores, then
             # separate graphemes with spaces.
             cut -f 1 "${TSV}" | \
-                python tokenize_segments.py $NAME > "${TASK}.${NAME}".src
+                python scripts/tokenize_segments.py $NAME > "${TASK}.${NAME}".src
             # segments are a little more complicated here.
             # damn I'd rather do this in python
             cut -f2 "${TSV}" | \
-                python tokenize_segments.py $NAME > "${TASK}.${NAME}".tgt
+                python scripts/tokenize_segments.py $NAME > "${TASK}.${NAME}".tgt
         done
     done
 }

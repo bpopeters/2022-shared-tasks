@@ -8,8 +8,8 @@ EXPNAME=$OUT_CORPUS
 # General idea:
 # - get unique types from corpus (applying some kind of length filtering)
 # fix these paths
-# python unique_types.py < other-data/europarl/Europarl.en-hu.en > other-data/train.eng.words.src
-python unique_types.py < $IN_CORPUS > $EXPNAME.uniqs.tmp
+# python scripts/unique_types.py < other-data/europarl/Europarl.en-hu.en > other-data/train.eng.words.src
+python scripts/unique_types.py < $IN_CORPUS > $EXPNAME.uniqs.tmp
 
 # - segment these types (this will require preprocessing them first)
 fairseq-interactive \

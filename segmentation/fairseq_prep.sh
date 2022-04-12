@@ -11,7 +11,7 @@ tsv() {
             # segments are a little more complicated here.
             # damn I'd rather do this in python
             cut -f2 "${TSV}" | \
-                python tokenize_segments.py $NAME > "${TASK}.${NAME}".tgt
+                python scripts/tokenize_segments.py $NAME > "${TASK}.${NAME}".tgt
         done
     done
 }

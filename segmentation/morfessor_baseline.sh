@@ -13,18 +13,18 @@ mkdir -p $EXP_NAME
 
 # copy unsegmented column to a temporary file
 TRAIN="${EXP_NAME}/train.tmp"
-cut -f 1 $DATA.train.tsv | python preprocess_morfessor.py > $TRAIN
+cut -f 1 $DATA.train.tsv | python scripts/preprocess_morfessor.py > $TRAIN
 
 MODEL_PATH="${EXP_NAME}/model.bin"
 morfessor-train -s $MODEL_PATH $TRAIN
 
 # segment dev set
 DEV=$EXP_NAME/dev.tmp
-cut -f 1 $DATA.dev.tsv | python preprocess_morfessor.py > $DEV
+cut -f 1 $DATA.dev.tsv | python scripts/preprocess_morfessor.py > $DEV
 
 # problem with this is that it incorrectly handles entries that have a space in
 # them. How do we handle that? One possibility is to replace spaces with "_"
-morfessor-segment $DEV -l $MODEL_PATH | python postprocess_morfessor.py > "${EXP_NAME}/mor.out"
+morfessor-segment $DEV -l $MODEL_PATH | python scripts/postprocess_morfessor.py > "${EXP_NAME}/mor.out"
 
 cut -f 1 $DATA.dev.tsv | paste - "${EXP_NAME}/mor.out" > "${EXP_NAME}/guess"
 

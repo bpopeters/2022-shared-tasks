@@ -7,8 +7,8 @@ EXPNAME=$OUT_CORPUS
 # General idea:
 # - get unique types from corpus (applying some kind of length filtering)
 # fix these paths
-# python unique_types.py < other-data/europarl/Europarl.en-hu.en > other-data/train.eng.words.src
-python unique_types.py 3 < $IN_CORPUS > $EXPNAME.uniqs.tmp
+# python scripts/unique_types.py < other-data/europarl/Europarl.en-hu.en > other-data/train.eng.words.src
+python scripts/unique_types.py 3 < $IN_CORPUS > $EXPNAME.uniqs.tmp
 
 # - segment these types (this will require preprocessing them first)
 fairseq-interactive \
@@ -21,7 +21,7 @@ fairseq-interactive \
     --batch-size 256 \
     --buffer-size 256 < $EXPNAME.uniqs.tmp > $EXPNAME.uniqs.out
     cat $EXPNAME.uniqs.out | grep -P '^H-'  | cut -c 3- | awk -F "\t" '{print $NF}' > $EXPNAME.uniqs.wtf
-    python postprocess_fairseq.py $NAME < $EXPNAME.uniqs.wtf > $EXPNAME.uniqs.segmented
+    python scripts/postprocess_fairseq.py $NAME < $EXPNAME.uniqs.wtf > $EXPNAME.uniqs.segmented
 
 # build the dictionary
 sed "s/ //g" $EXPNAME.uniqs.tmp | paste - $EXPNAME.uniqs.segmented > $EXPNAME.segment_dict.tsv

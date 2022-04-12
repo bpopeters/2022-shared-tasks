@@ -8,9 +8,9 @@ LANG=$( basename $DATA .sentence)
 # General idea:
 # - get unique types from corpus (applying some kind of length filtering)
 # fix these paths
-# python unique_types.py < other-data/europarl/Europarl.en-hu.en > other-data/train.eng.words.src
+# python scripts/unique_types.py < other-data/europarl/Europarl.en-hu.en > other-data/train.eng.words.src
 
-cut -f 1 "${DATA}.dev.tsv" | python unique_types.py  > $NAME.dev.src
+cut -f 1 "${DATA}.dev.tsv" | python scripts/unique_types.py  > $NAME.dev.src
 
 # - segment these types (this will require preprocessing them first)
 fairseq-interactive \
@@ -23,7 +23,7 @@ fairseq-interactive \
     --batch-size 256 \
     --buffer-size 256 < "${NAME}.dev.src" | \
     grep -P '^H-'  | cut -c 3- | awk -F "\t" '{print $NF}' | \
-    python postprocess_fairseq.py "word" > $NAME.dev.values
+    python scripts/postprocess_fairseq.py "word" > $NAME.dev.values
 
 # build the dictionary
 sed "s/ //g" $NAME.dev.src | paste - $NAME.dev.values > $NAME.dev.dict

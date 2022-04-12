@@ -25,7 +25,7 @@ decode() {
 	--batch-size 256 \
         > "${OUT}"
     # Extracts the predictions into a TSV file.
-    cat "${OUT}" | grep -P '^H-'  | cut -c 3- | sort -n -k 1 | awk -F "\t" '{print $NF}' | python postprocess_fairseq.py $NAME > $PRED
+    cat "${OUT}" | grep -P '^H-'  | cut -c 3- | sort -n -k 1 | awk -F "\t" '{print $NF}' | python scripts/postprocess_fairseq.py $NAME > $PRED
     cut -f 1 "${DATA}.dev.tsv" | paste - $PRED > "${CP}/${MODE}.guess"
     # Applies the evaluation script to the TSV file.
     python 2022SegmentationST/evaluation/evaluate.py --gold "${DATA}.dev.tsv" --guess "${CP}/${MODE}.guess" > "${CP}/${MODE}.results"
