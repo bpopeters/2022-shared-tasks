@@ -23,7 +23,7 @@ readonly SAVE_INTERVAL=1
 readonly SCHEDULER=reduce_lr_on_plateau
 readonly PATIENCE=10
 
-MODEL_DIR="fairseq-checkpoints/multi/char2char-bidirectional-entmax-${LR_PATIENCE}-${EMB}-${HID}-${LAYERS}-${DROPOUT}-${BATCH}-${ENTMAX_ALPHA}"
+MODEL_DIR="fairseq-checkpoints/multi/char2char-bidirectional-encdec-entmax-${LR_PATIENCE}-${EMB}-${HID}-${LAYERS}-${DROPOUT}-${BATCH}-${ENTMAX_ALPHA}"
 
 train() {
     local -r CP="$1"; shift
@@ -35,6 +35,7 @@ train() {
         --lang-pairs="ces_surface-ces_segment,eng_surface-eng_segment,fra_surface-fra_segment,hun_surface-hun_segment,ita_surface-ita_segment,lat_surface-lat_segment,rus_surface-rus_segment,spa_surface-spa_segment,ces_segment-ces_surface,eng_segment-eng_surface,fra_segment-fra_surface,hun_segment-hun_surface,ita_segment-ita_surface,lat_segment-lat_surface,rus_segment-rus_surface,spa_segment-spa_surface" \
         --sampling-method="uniform" \
         --encoder-langtok src \
+        --decoder-langtok \
         --seed="${SEED}" \
         --arch=lstm \
         --encoder-bidirectional \
