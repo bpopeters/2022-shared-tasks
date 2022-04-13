@@ -11,7 +11,7 @@ for f in $@ ; do
     for HID in 512 1024 ; do
         for LAYERS in 1 2 ; do
             for BATCH in 32 64 ; do
-                for LR in 0.01 0.001 0.0001 ; do
+                for LR in 0.001 0.0005 0.0001 ; do
                     bash fairseq_train_xe_improved.sh $DATA_BIN $NAME $EMB $HID $LAYERS $BATCH $LR
                 done
             done
