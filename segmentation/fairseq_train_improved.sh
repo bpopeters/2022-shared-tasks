@@ -1,11 +1,11 @@
 readonly DATA_BIN=$1  # example: 2022-shared-tasks/segmentation/eng.word
 readonly NAME=$2  # just a special name for the experiment
-EMB=$2
-HID=$3
-LAYERS=$4
-BATCH=$5
-ENTMAX_ALPHA=$6
-LR=$7  # note!
+EMB=$3
+HID=$4
+LAYERS=$5
+BATCH=$6
+ENTMAX_ALPHA=$7
+LR=$8  # note!
 
 # Adapted from the SIGMORPHON 2020 script by Kyle Gorman and Shijie Wu.
 
