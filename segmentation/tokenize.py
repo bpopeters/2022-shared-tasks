@@ -16,8 +16,11 @@ target data.
 """
 
 import argparse
+from collections import Counter
 from functools import partial
 from itertools import chain
+import os
+import shutil
 
 import sentencepiece as spm
 
@@ -51,74 +54,148 @@ def character_tokenize(string):
     return list(string.strip())
 
 
-def write_tokenized_corpus(path, data, tokenizer):
+def write_tokenized_corpus(path, lines):
     with open(path, "w") as f:
-        for ex in data:
-            toks = tokenizer(ex)
-            f.write(" ".join(toks) + "\n")
+        for line in lines:
+            f.write(" ".join(line) + "\n")
 
 
-def build_spm_tokenizer(pretrained_path, new_prefix, train_iter, vocab_size):
+def build_spm_tokenizer(new_prefix, train_iter, vocab_size):
+    spm.SentencePieceTrainer.train(
+        sentence_iterator=train_iter,
+        model_prefix=new_prefix,
+        vocab_size=vocab_size,
+        character_coverage=1.0
+    )
+    # spm_model_path = new_prefix + ".model"
+    # processor = spm.SentencePieceProcessor(model_file=spm_model_path)
 
-    if pretrained_path is not None:
-        spm_model_path = pretrained_path
+    # return processor
+
+
+def copy_spm_model(existing_path, new_path):
+    # but what about the vocab?
+    for suffix in [".model", ".vocab"]:
+        try:
+            shutil.copy(existing_path + suffix, new_path + suffix)
+        except shutil.SameFileError:
+            pass
+
+
+def write_character_vocab(path, char_seqs):
+    vocab = Counter()
+    for seq in char_seqs:
+        vocab.update(seq)
+    with open(path, 'w') as f:
+        for sym in ["<unk>", "<s>", "</s>"]:
+            f.write("\t".join([sym, '1']) + "\n")
+        for char, count in vocab.most_common():
+            f.write("\t".join([char, str(count)]) + "\n")
+
+
+def prepare_spm(existing_spm_path, spm_path, train_iter, vocab_size):
+    """
+    If existing_spm_path is not None, train_iter and vocab_size are ignored
+
+    This function either copies an existing sentencepiece model to the spm_path
+    location (inside the tokenized data directory) or it makes a new
+    sentencepiece model and puts it there.
+
+    It returns an spm.SentencePieceProcessor instance, whose encode() method
+    can be used as a tokenizer
+    """
+    # spm path should not have the suffix (.model or .vocab)
+
+    # src_spm_path = os.path.join(args.out_dir, args.new_spm_prefix + ".src")
+    if existing_spm_path is not None:
+        # preexisting model; copy it to the right directory
+        copy_spm_model(existing_spm_path, spm_path)
     else:
+        # spm model needs to be trained
         spm.SentencePieceTrainer.train(
             sentence_iterator=train_iter,
-            model_prefix=new_prefix,
+            model_prefix=spm_path,
             vocab_size=vocab_size,
             character_coverage=1.0
         )
-        spm_model_path = new_prefix + ".model"
-    processor = spm.SentencePieceProcessor(model_file=spm_model_path)
 
+    # now: the spm model has been built. Use it to make a processor
+    processor = spm.SentencePieceProcessor(model_file=spm_path + ".model")
+    # todo: character coverage, alpha hyperparameter
     return processor
 
 
 def main(args):
+    # make the output directory
+    os.makedirs(args.out_dir, exist_ok=True)
+
+    # read data
     data = read_tsv(args.corpus)
     src = data["surface"]
     tgt = data["segment"]
 
-    # cases:
-    # char for both
-    # spm for one
-    # separate spms for each
-    # shared spm for both
+    # another thing to think about: you should not create an spm vocab if
+    # split != train
 
     if args.src_tok_type == "spm":
-        src_processor = build_spm_tokenizer(
-            args.pretrained_spm,
-            args.new_spm_prefix + ".src",
+        assert args.split == "train" or args.existing_src_spm is not None
+        src_spm_path = os.path.join(args.out_dir, "src")
+        src_processor = prepare_spm(
+            args.existing_src_spm,
+            src_spm_path,
             chain(src, tgt) if args.shared_data else iter(src),
             args.vocab_size
         )
         # todo: character coverage, alpha hyperparameter
-        src_line_tokenizer = partial(
+        src_tokenizer = partial(
             src_processor.encode,
             out_type=str,
             enable_sampling=args.sample
         )
     else:
-        src_line_tokenizer = character_tokenize
+        src_tokenizer = character_tokenize
 
     if args.tgt_tok_type == "spm":
-        tgt_processor = build_spm_tokenizer(
-            args.pretrained_spm,
-            args.new_spm_prefix + ".tgt",
+        assert args.split == "train" or args.existing_tgt_spm is not None
+        tgt_spm_path = os.path.join(args.out_dir, "tgt")
+        tgt_processor = prepare_spm(
+            args.existing_tgt_spm,
+            tgt_spm_path,
             chain(src, tgt) if args.shared_data else iter(tgt),
             args.vocab_size
         )
-        tgt_line_tokenizer = partial(
+        # todo: character coverage, alpha hyperparameter
+        tgt_tokenizer = partial(
             tgt_processor.encode,
             out_type=str,
             enable_sampling=args.sample
         )
     else:
-        tgt_line_tokenizer = character_tokenize
+        tgt_tokenizer = character_tokenize
 
-    write_tokenized_corpus(args.out_prefix + ".src", src, src_line_tokenizer)
-    write_tokenized_corpus(args.out_prefix + ".tgt", tgt, tgt_line_tokenizer)
+    # write to the correct directory
+    # I would like to simplify this by separating the tokenization from the
+    # writing.
+    src_toks = [src_tokenizer(s) for s in src]
+    write_tokenized_corpus(
+        os.path.join(args.out_dir, args.split + ".src"), src_toks
+    )
+    tgt_toks = [tgt_tokenizer(t) for t in tgt]
+    write_tokenized_corpus(
+        os.path.join(args.out_dir, args.split + ".tgt"), tgt_toks,
+    )
+
+    if args.split == "train":
+        if args.src_tok_type == "char":
+            write_character_vocab(
+                os.path.join(args.out_dir, "src.vocab"),
+                chain(src_toks, tgt_toks) if args.shared_data else src_toks
+            )
+        if args.tgt_tok_type == "char":
+            write_character_vocab(
+                os.path.join(args.out_dir, "tgt.vocab"),
+                chain(src_toks, tgt_toks) if args.shared_data else tgt_toks
+            )
 
 
 if __name__ == "__main__":
@@ -126,17 +203,14 @@ if __name__ == "__main__":
     parser.add_argument('corpus', help="tsv file from which to build tokenized data")
     parser.add_argument("--src-tok-type", "-s", default="char", choices=["char", "spm"])
     parser.add_argument("--tgt-tok-type", "-t", default="char", choices=["char", "spm"])
-    parser.add_argument('--pretrained-spm', "-p", default=None,
+    parser.add_argument('--existing-src-spm', default=None,
                         help="Path to existing sentencepiece model")
-    parser.add_argument('--pretrained-src-spm', default=None,
+    parser.add_argument('--existing-tgt-spm', default=None,
                         help="Path to existing sentencepiece model")
-    parser.add_argument('--pretrained-tgt-spm', default=None,
-                        help="Path to existing sentencepiece model")
-    parser.add_argument("--new-spm-prefix", "-n", default="m",
-                        help="Path to write new spm model to")
     parser.add_argument("--vocab-size", "-v", default=1000, type=int,
                         help="Vocab size if training a new sentencepiece model")
-    parser.add_argument("--out-prefix", "-o", default="foo")
+    parser.add_argument("--out-dir", "-o", required=True)
+    parser.add_argument("--split", required=True, choices=["train", "dev", "test"])
     parser.add_argument("--sample", action="store_true")
     parser.add_argument("--shared-data", action="store_true")
     opt = parser.parse_args()
