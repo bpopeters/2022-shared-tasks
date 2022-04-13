@@ -20,6 +20,7 @@ readonly SAVE_INTERVAL=1
 readonly SCHEDULER=reduce_lr_on_plateau
 readonly PATIENCE=5
 readonly LR_PATIENCE=2
+readonly DROPOUT=0.3
 
 MODEL_DIR="fairseq-checkpoints/grid-xe/${NAME}-xe-${EMB}-${HID}-${LAYERS}-${BATCH}-${LR}"
 

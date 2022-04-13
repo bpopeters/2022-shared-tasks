@@ -21,6 +21,7 @@ readonly SAVE_INTERVAL=1
 readonly SCHEDULER=reduce_lr_on_plateau
 readonly PATIENCE=5
 readonly LR_PATIENCE=2
+readonly DROPOUT=0.3
 
 MODEL_DIR="fairseq-checkpoints/grid-entmax/${NAME}-entmax-${EMB}-${HID}-${LAYERS}-${BATCH}-${ENTMAX_ALPHA}-${LR}"
 
