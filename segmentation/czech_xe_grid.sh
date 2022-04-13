@@ -7,7 +7,7 @@ EMB=512
 
 for f in $@ ; do
     DATA_BIN="new-data-bin/char2char/${f}"
-    NAME="2022-04-13"
+    NAME="ces-2022-04-13"
     for HID in 512 1024 ; do
         for LAYERS in 1 2 ; do
             for BATCH in 32 64 ; do
