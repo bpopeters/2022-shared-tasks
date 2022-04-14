@@ -1,5 +1,4 @@
 readonly DATA_BIN=$1
-NAME=$( basename $DATA )  # i.e. eng.word
 readonly MODEL_PATH=$2
 readonly ENTMAX_ALPHA=$3
 readonly BEAM=$4
@@ -28,7 +27,7 @@ decode() {
     cat "${OUT}" | grep -P '^H-'  | cut -c 3- | sort -n -k 1 | awk -F "\t" '{print $NF}' | python postprocess.py > $PRED
     cut -f 1 "${DATA}.dev.tsv" | paste - $PRED > "${CP}/${MODE}-${BEAM}.guess"
     # Applies the evaluation script to the TSV file.
-    python 2022SegmentationST/evaluation/evaluate.py --gold $GOLD_PATH --guess "${CP}/${MODE}.guess" > "${CP}/${MODE}-${BEAM}.results"
+    python 2022SegmentationST/evaluation/evaluate.py --gold $GOLD_PATH --guess "${CP}/${MODE}-${BEAM}.guess" > "${CP}/${MODE}-${BEAM}.results"
 }
 
 decode $MODEL_PATH dev

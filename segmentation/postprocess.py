@@ -13,7 +13,7 @@ def postprocess_chars(line):
 
 def main(args):
     for line in sys.stdin:
-        sys.stdout.write(postprocess_chars(line))
+        sys.stdout.write(postprocess_chars(line) + "\n")
 
 
 if __name__ == "__main__":
