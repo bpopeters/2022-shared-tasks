@@ -178,11 +178,11 @@ def main(args):
     # write to the correct directory
     # I would like to simplify this by separating the tokenization from the
     # writing.
-    src_toks = [src_tokenizer(s) for s in src]
+    src_toks = [src_tokenizer(s) for s in src * args.n_samples]
     write_tokenized_corpus(
         os.path.join(args.out_dir, args.split + ".src"), src_toks
     )
-    tgt_toks = [tgt_tokenizer(t) for t in tgt]
+    tgt_toks = [tgt_tokenizer(t) for t in tgt * args.n_samples]
     write_tokenized_corpus(
         os.path.join(args.out_dir, args.split + ".tgt"), tgt_toks,
     )
@@ -216,5 +216,7 @@ if __name__ == "__main__":
     parser.add_argument("--sample", action="store_true")
     parser.add_argument("--alpha", type=float, default=1.0)
     parser.add_argument("--shared-data", action="store_true")
+    parser.add_argument("--n-samples", type=int, default=1,
+                        help="Number of times to repeat the corpus (useful for subword regularization)")
     opt = parser.parse_args()
     main(opt)
