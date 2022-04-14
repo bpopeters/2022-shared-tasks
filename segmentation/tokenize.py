@@ -150,7 +150,8 @@ def main(args):
         src_tokenizer = partial(
             src_processor.encode,
             out_type=str,
-            enable_sampling=args.sample
+            enable_sampling=args.sample,
+            alpha=args.alpha
         )
     else:
         src_tokenizer = character_tokenize
@@ -168,7 +169,8 @@ def main(args):
         tgt_tokenizer = partial(
             tgt_processor.encode,
             out_type=str,
-            enable_sampling=args.sample
+            enable_sampling=args.sample,
+            alpha=args.alpha
         )
     else:
         tgt_tokenizer = character_tokenize
@@ -212,6 +214,7 @@ if __name__ == "__main__":
     parser.add_argument("--out-dir", "-o", required=True)
     parser.add_argument("--split", required=True, choices=["train", "dev", "test"])
     parser.add_argument("--sample", action="store_true")
+    parser.add_argument("--alpha", type=float, default=1.0)
     parser.add_argument("--shared-data", action="store_true")
     opt = parser.parse_args()
     main(opt)

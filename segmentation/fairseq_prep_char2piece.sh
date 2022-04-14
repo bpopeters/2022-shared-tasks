@@ -1,6 +1,7 @@
 readonly DATA_PATH=$1  # example: 2022-shared-tasks/data/eng.word
 readonly OUT_PATH=$2
 readonly VOCAB=$3
+shift 3
 
 bin() {
     tail -n +4 "${OUT_PATH}/src.vocab" | cut -f 1 | sed "s/$/ 100/g" > "${OUT_PATH}/src.fairseq.vocab"
@@ -20,7 +21,7 @@ bin() {
         --destdir="${OUT_PATH}"
 }
 
-python tokenize.py "${DATA_PATH}.train.tsv" --src-tok-type char --tgt-tok-type spm --vocab-size $VOCAB --out-dir $OUT_PATH --split train
+python tokenize.py "${DATA_PATH}.train.tsv" --src-tok-type char --tgt-tok-type spm --vocab-size $VOCAB --out-dir $OUT_PATH --split train $@
 python tokenize.py "${DATA_PATH}.dev.tsv" --src-tok-type char --tgt-tok-type spm --vocab-size $VOCAB --existing-tgt-spm "${OUT_PATH}/tgt" --out-dir $OUT_PATH --split dev
 bin
 
