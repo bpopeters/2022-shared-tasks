@@ -21,6 +21,6 @@ bin() {
 }
 
 python tokenize.py "${DATA_PATH}.train.tsv" --src-tok-type spm --tgt-tok-type spm --vocab-size $VOCAB --out-dir $OUT_PATH --split train --shared-data
-python tokenize.py "${DATA_PATH}.dev.tsv" --src-tok-type spm --tgt-tok-type spm --vocab-size $VOCAB --existing-tgt-spm "${OUT_PATH}/tgt" --out-dir $OUT_PATH --split dev --shared-data
+python tokenize.py "${DATA_PATH}.dev.tsv" --src-tok-type spm --tgt-tok-type spm --vocab-size $VOCAB --existing-src-spm "${OUT_PATH}/src" --existing-tgt-spm "${OUT_PATH}/tgt" --out-dir $OUT_PATH --split dev --shared-data
 bin
 
