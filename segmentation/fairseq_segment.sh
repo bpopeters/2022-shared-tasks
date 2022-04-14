@@ -24,7 +24,7 @@ decode() {
 	--batch-size 256 \
         > "${OUT}"
     # Extracts the predictions into a TSV file.
-    cat "${OUT}" | grep -P '^H-'  | cut -c 3- | sort -n -k 1 | awk -F "\t" '{print $NF}' | python postprocess.py > $PRED
+    cat "${OUT}" | grep -P '^H-'  | cut -c 3- | sort -n -k 1 | awk -F "\t" '{print $NF}' | python detokenize.py > $PRED
     cut -f 1 $GOLD_PATH | paste - $PRED > "${CP}/${MODE}-${BEAM}.guess"
     # Applies the evaluation script to the TSV file.
     python 2022SegmentationST/evaluation/evaluate.py --gold $GOLD_PATH --guess "${CP}/${MODE}-${BEAM}.guess" > "${CP}/${MODE}-${BEAM}.results"
