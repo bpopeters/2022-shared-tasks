@@ -4,7 +4,7 @@
 
 DATA_BIN=$1  # e.g. "new-data-bin/char2piece/ces.word-1000"
 NAME=$2  # e.g. "ces-v1000-2022-04-13"
-GOLD=$3
+GOLD_PATH=$3
 shift 3
 
 DROPOUT=0.3
