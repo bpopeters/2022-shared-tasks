@@ -13,6 +13,7 @@
 EXISTING_DATA_BIN=$1
 OUT_PATH=$2
 TSV=$3
+shift 3
 
 bin() {
     cp "${EXISTING_DATA_BIN}/src.fairseq.vocab" "${OUT_PATH}/src.fairseq.vocab"
@@ -29,5 +30,5 @@ bin() {
         --destdir="${OUT_PATH}"
 }
 
-python tokenize.py "${TSV}" --src-tok-type char --tgt-tok-type spm --existing-tgt-spm "${EXISTING_DATA_BIN}/tgt" --out-dir $OUT_PATH --split dev --sample --alpha 0.1
+python tokenize.py "${TSV}" --src-tok-type char --tgt-tok-type spm --existing-tgt-spm "${EXISTING_DATA_BIN}/tgt" --out-dir $OUT_PATH --split dev $@
 bin
