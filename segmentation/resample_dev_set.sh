@@ -15,8 +15,8 @@ OUT_PATH=$2
 TSV=$3
 
 bin() {
-    cp "${EXISTING_DATA_BIN}/src.fairseq.vocab" > "${OUT_PATH}/src.fairseq.vocab"
-    cp "${EXISTING_DATA_BIN}/tgt.fairseq.vocab" > "${OUT_PATH}/tgt.fairseq.vocab"
+    cp "${EXISTING_DATA_BIN}/src.fairseq.vocab" "${OUT_PATH}/src.fairseq.vocab"
+    cp "${EXISTING_DATA_BIN}/tgt.fairseq.vocab" "${OUT_PATH}/tgt.fairseq.vocab"
     fairseq-preprocess \
         --source-lang="src" \
         --target-lang="tgt" \
