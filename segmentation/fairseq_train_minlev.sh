@@ -16,7 +16,7 @@ readonly SEED=42
 readonly CRITERION=entmax_loss
 readonly OPTIMIZER=adam
 readonly CLIP_NORM=1.
-readonly MAX_UPDATE=200000
+readonly MAX_UPDATE=150000
 readonly SAVE_INTERVAL=1
 readonly SCHEDULER=reduce_lr_on_plateau
 readonly PATIENCE=5
@@ -59,7 +59,7 @@ train() {
         --best-checkpoint-metric "lev_dist" \
         --eval-levenshtein \
         --eval-bleu-remove-bpe "sentencepiece" \
-        --eval-bleu-args '{"beam": 5}' \
+        --eval-bleu-args '{"beam": 5, "alpha": 1.5}' \
         "$@"   # In case we need more configuration control.
 }
 
