@@ -59,7 +59,7 @@ train() {
         --best-checkpoint-metric "lev_dist" \
         --eval-levenshtein \
         --eval-bleu-remove-bpe "sentencepiece" \
-        --eval-bleu-args '{"beam": 5, "alpha": 1.5}' \
+        --eval-bleu-args '{"beam_size": 5, "alpha": 1.5}' \
         "$@"   # In case we need more configuration control.
 }
 
