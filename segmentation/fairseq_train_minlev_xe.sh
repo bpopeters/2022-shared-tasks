@@ -5,6 +5,7 @@ HID=$4
 LAYERS=$5
 BATCH=$6
 LR=$7  # note!
+GRID_LOC=$8
 
 # Adapted from the SIGMORPHON 2020 script by Kyle Gorman and Shijie Wu.
 
@@ -22,7 +23,7 @@ readonly PATIENCE=5
 readonly LR_PATIENCE=2
 readonly DROPOUT=0.3
 
-MODEL_DIR="fairseq-checkpoints/grid-xe/${NAME}-xe-minlev-${EMB}-${HID}-${LAYERS}-${BATCH}-${LR}"
+MODEL_DIR="${GRID_LOC}/${NAME}-xe-minlev-${EMB}-${HID}-${LAYERS}-${BATCH}-${LR}"
 
 train() {
     local -r CP="$1"; shift

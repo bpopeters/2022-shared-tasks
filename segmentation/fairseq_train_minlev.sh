@@ -6,6 +6,7 @@ LAYERS=$5
 BATCH=$6
 ENTMAX_ALPHA=$7
 LR=$8  # note!
+GRID_LOC=$9
 
 # Adapted from the SIGMORPHON 2020 script by Kyle Gorman and Shijie Wu.
 
@@ -23,7 +24,7 @@ readonly PATIENCE=5
 readonly LR_PATIENCE=2
 readonly DROPOUT=0.3
 
-MODEL_DIR="fairseq-checkpoints/grid-entmax/${NAME}-entmax-minlev-${EMB}-${HID}-${LAYERS}-${BATCH}-${ENTMAX_ALPHA}-${LR}"
+MODEL_DIR="${GRID_LOC}/${NAME}-entmax-minlev-${EMB}-${HID}-${LAYERS}-${BATCH}-${ENTMAX_ALPHA}-${LR}"
 
 train() {
     local -r CP="$1"; shift
