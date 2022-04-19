@@ -1,7 +1,5 @@
-# the same as the basic fairseq data, except adding the morphological codes to the beginning of the source sequence
-
 readonly DATA=$1  # example: 2022-shared-tasks/data/eng.word
-NAME=$( basename $DATA ).tagged  # i.e. eng.word
+NAME=$( basename $DATA )  # i.e. eng.word
 
 tsv() {
     for TASK in train dev ; do
@@ -9,13 +7,10 @@ tsv() {
             # Separates graphemes with spaces.
             cut -f 1 "${TSV}" | \
                 sed 's/./& /g' \
-                > "${TASK}.${NAME}".src.tmp
-            cut -f 3 "${TSV}" | paste -d " " - "${TASK}.${NAME}".src.tmp > "${TASK}.${NAME}".src
-            rm "${TASK}.${NAME}".src.tmp
+                > "${TASK}.${NAME}".src
             # segments are a little more complicated here.
             # damn I'd rather do this in python
-            cut -f2 "${TSV}" | \
-                python tokenize_segments.py > "${TASK}.${NAME}".tgt
+            cut -f2 "${TSV}" > "${TASK}.${NAME}".tgt
         done
     done
 }
@@ -31,6 +26,8 @@ bin() {
         --tokenizer=space \
         --thresholdsrc=1 \
         --thresholdtgt=1 \
+        --srcdict "${DATA}.src.fairseq.vocab"  \
+        --tgtdict "${DATA}.tgt.fairseq.vocab" \
         --destdir="data-bin/${NAME}"
 }
 

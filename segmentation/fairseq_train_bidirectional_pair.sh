@@ -1,11 +1,13 @@
-readonly DATA=$1  # example: 2022-shared-tasks/segmentation/eng.word
-NAME=$( basename $DATA )  # i.e. eng.word
+# will not use DATA like this
+readonly DATA_BIN=$1  # example: 2022-shared-tasks/segmentation/eng.word
 EMB=$2
 HID=$3
 LAYERS=$4
 DROPOUT=$5
 BATCH=$6
 ENTMAX_ALPHA=$7
+LR_PATIENCE=$8
+LANGUAGE=$9
 
 # Adapted from the SIGMORPHON 2020 script by Kyle Gorman and Shijie Wu.
 
@@ -17,20 +19,23 @@ readonly CRITERION=entmax_loss
 readonly OPTIMIZER=adam
 readonly LR=1e-3
 readonly CLIP_NORM=1.
-readonly MAX_UPDATE=50000
+readonly MAX_UPDATE=100000
 readonly SAVE_INTERVAL=1
 readonly SCHEDULER=reduce_lr_on_plateau
-readonly PATIENCE=5
+readonly PATIENCE=10
 
-MODEL_DIR="fairseq-checkpoints/${NAME}-entmax-${EMB}-${HID}-${LAYERS}-${DROPOUT}-${BATCH}-${ENTMAX_ALPHA}"
+MODEL_DIR="fairseq-checkpoints/multi/${LANGUAGE}-char2char-bidirectional-entmax-${LR_PATIENCE}-${EMB}-${HID}-${LAYERS}-${DROPOUT}-${BATCH}-${ENTMAX_ALPHA}"
 
 train() {
     local -r CP="$1"; shift
     fairseq-train \
-        "data-bin/${NAME}" \
+        "${DATA_BIN}" \
         --save-dir="${CP}" \
-        --source-lang="${NAME}.src" \
-        --target-lang="${NAME}.tgt" \
+        --task translation_multi_simple_epoch \
+        --langs="ces_surface,eng_surface,fra_surface,hun_surface,ita_surface,lat_surface,rus_surface,spa_surface,ces_segment,eng_segment,fra_segment,hun_segment,ita_segment,lat_segment,rus_segment,spa_segment" \
+        --lang-pairs="${LANGUAGE}_surface-${LANGUAGE}_segment,${LANGUAGE}_segment-${LANGUAGE}_surface" \
+        --sampling-method="uniform" \
+        --encoder-langtok src \
         --seed="${SEED}" \
         --arch=lstm \
         --encoder-bidirectional \
@@ -48,6 +53,7 @@ train() {
         --optimizer="${OPTIMIZER}" \
         --lr="${LR}" \
         --lr-scheduler="${SCHEDULER}" \
+        --lr-patience="${LR_PATIENCE}" \
         --clip-norm="${CLIP_NORM}" \
         --batch-size="${BATCH}" \
         --max-update="${MAX_UPDATE}" \

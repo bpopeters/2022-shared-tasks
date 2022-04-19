@@ -1,17 +1,17 @@
 readonly DATA=$1  # example: 2022-shared-tasks/data/eng.word
-NAME=$( basename $DATA ).derivation  # i.e. eng.word
+NAME=$( basename $DATA ).compounding  # i.e. eng.word
 
 tsv() {
     for TASK in train dev ; do
         for TSV in "${DATA}.${TASK}.tsv"; do
             # Separates graphemes with spaces.
-            grep "[01]1[01]" "${TSV}" | cut -f 1 | \
+            grep "[01][01]1" "${TSV}" | cut -f 1 | \
                 sed 's/./& /g' \
                 > "${TASK}.${NAME}".src
             # segments are a little more complicated here.
             # damn I'd rather do this in python
-            grep "[01]1[01]" "${TSV}" | cut -f2 | \
-                python tokenize_segments.py > "${TASK}.${NAME}".tgt
+            grep "[01][01]1" "${TSV}" | cut -f2 | \
+                python scripts/tokenize_segments.py > "${TASK}.${NAME}".tgt
         done
     done
     TSV="${DATA}.dev.tsv"
@@ -23,7 +23,7 @@ tsv() {
     # segments are a little more complicated here.
     # damn I'd rather do this in python
     cat "${TSV}" | cut -f2 | \
-        python tokenize_segments.py > "${TASK}.${NAME}".tgt
+        python scripts/tokenize_segments.py > "${TASK}.${NAME}".tgt
 }
 
 bin() {

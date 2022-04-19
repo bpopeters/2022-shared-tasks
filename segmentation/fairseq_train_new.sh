@@ -3,7 +3,7 @@ NAME=$( basename $DATA )  # i.e. eng.word
 EMB=$2
 HID=$3
 LAYERS=$4
-DROPOUT=$5
+LR=$5
 BATCH=$6
 ENTMAX_ALPHA=$7
 
@@ -15,14 +15,13 @@ set -euo pipefail
 readonly SEED=1917
 readonly CRITERION=entmax_loss
 readonly OPTIMIZER=adam
-readonly LR=1e-3
 readonly CLIP_NORM=1.
-readonly MAX_UPDATE=50000
-readonly SAVE_INTERVAL=1
+readonly MAX_UPDATE=100000
 readonly SCHEDULER=reduce_lr_on_plateau
 readonly PATIENCE=5
+readonly DROPOUT=0.3
 
-MODEL_DIR="fairseq-checkpoints/${NAME}-entmax-${EMB}-${HID}-${LAYERS}-${DROPOUT}-${BATCH}-${ENTMAX_ALPHA}"
+MODEL_DIR="new-fairseq-checkpoints/${NAME}-entmax-${EMB}-${HID}-${LAYERS}-${LR}-${BATCH}-${ENTMAX_ALPHA}"
 
 train() {
     local -r CP="$1"; shift
@@ -47,13 +46,14 @@ train() {
         --loss-alpha="${ENTMAX_ALPHA}" \
         --optimizer="${OPTIMIZER}" \
         --lr="${LR}" \
+        --lr-shrink=0.5 \
         --lr-scheduler="${SCHEDULER}" \
         --clip-norm="${CLIP_NORM}" \
         --batch-size="${BATCH}" \
         --max-update="${MAX_UPDATE}" \
-        --save-interval="${SAVE_INTERVAL}" \
         --patience="${PATIENCE}" \
         --no-epoch-checkpoints \
+        --no-last-checkpoints \
         "$@"   # In case we need more configuration control.
 }
 

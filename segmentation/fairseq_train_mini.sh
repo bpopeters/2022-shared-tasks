@@ -1,11 +1,11 @@
-readonly DATA=$1  # example: 2022-shared-tasks/segmentation/eng.word
-NAME=$( basename $DATA )  # i.e. eng.word
-EMB=$2
-HID=$3
-LAYERS=$4
-DROPOUT=$5
-BATCH=$6
-ENTMAX_ALPHA=$7
+NAME="eng.word"
+
+EMB=512
+HID=1024
+LAYERS=2
+DROPOUT=0.3
+BATCH=64
+ENTMAX_ALPHA=1.5
 
 # Adapted from the SIGMORPHON 2020 script by Kyle Gorman and Shijie Wu.
 
@@ -22,12 +22,11 @@ readonly SAVE_INTERVAL=1
 readonly SCHEDULER=reduce_lr_on_plateau
 readonly PATIENCE=5
 
-MODEL_DIR="fairseq-checkpoints/${NAME}-entmax-${EMB}-${HID}-${LAYERS}-${DROPOUT}-${BATCH}-${ENTMAX_ALPHA}"
-
 train() {
+    local -r CUR_SIZE="$1" ; shift
     local -r CP="$1"; shift
     fairseq-train \
-        "data-bin/${NAME}" \
+        "data-bin/mini-data/${NAME}-${CUR_SIZE}" \
         --save-dir="${CP}" \
         --source-lang="${NAME}.src" \
         --target-lang="${NAME}.tgt" \
@@ -57,4 +56,8 @@ train() {
         "$@"   # In case we need more configuration control.
 }
 
-train $MODEL_DIR
+SIZES=(100 500 1000 10000 20000)
+for SIZE in "${SIZES[@]}" ; do
+    MODEL_DIR="fairseq-checkpoints/mini/${NAME}-${SIZE}-entmax-${EMB}-${HID}-${LAYERS}-${DROPOUT}-${BATCH}-${ENTMAX_ALPHA}"
+    train $SIZE $MODEL_DIR
+done

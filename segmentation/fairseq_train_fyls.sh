@@ -6,6 +6,7 @@ LAYERS=$4
 DROPOUT=$5
 BATCH=$6
 ENTMAX_ALPHA=$7
+LABEL_SMOOTHING=$8
 
 # Adapted from the SIGMORPHON 2020 script by Kyle Gorman and Shijie Wu.
 
@@ -13,7 +14,7 @@ set -euo pipefail
 
 # Defaults.
 readonly SEED=1917
-readonly CRITERION=entmax_loss
+readonly CRITERION=fyls_loss
 readonly OPTIMIZER=adam
 readonly LR=1e-3
 readonly CLIP_NORM=1.
@@ -22,7 +23,7 @@ readonly SAVE_INTERVAL=1
 readonly SCHEDULER=reduce_lr_on_plateau
 readonly PATIENCE=5
 
-MODEL_DIR="fairseq-checkpoints/${NAME}-entmax-${EMB}-${HID}-${LAYERS}-${DROPOUT}-${BATCH}-${ENTMAX_ALPHA}"
+MODEL_DIR="fairseq-checkpoints/${NAME}-fyls-${EMB}-${HID}-${LAYERS}-${DROPOUT}-${BATCH}-${ENTMAX_ALPHA}-${LABEL_SMOOTHING}"
 
 train() {
     local -r CP="$1"; shift
@@ -45,6 +46,7 @@ train() {
         --share-decoder-input-output-embed \
         --criterion="${CRITERION}" \
         --loss-alpha="${ENTMAX_ALPHA}" \
+        --label-smoothing="${LABEL_SMOOTHING}" \
         --optimizer="${OPTIMIZER}" \
         --lr="${LR}" \
         --lr-scheduler="${SCHEDULER}" \

@@ -10,8 +10,7 @@ tsv() {
                 > "${TASK}.${NAME}".src
             # segments are a little more complicated here.
             # damn I'd rather do this in python
-            cut -f2 "${TSV}" | \
-                python tokenize_segments.py > "${TASK}.${NAME}".tgt
+            cut -f2 "${TSV}" > "${TASK}.${NAME}".tgt
         done
     done
 }
@@ -27,6 +26,8 @@ bin() {
         --tokenizer=space \
         --thresholdsrc=1 \
         --thresholdtgt=1 \
+        --srcdict "data-bin/eng.word/dict.eng.word.src.txt"  \
+        --tgtdict "${DATA}.fairseq.vocab" \
         --destdir="data-bin/${NAME}"
 }
 
