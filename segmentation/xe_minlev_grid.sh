@@ -14,7 +14,7 @@ for HID in 512 1024 ; do
     for LAYERS in 1 2 ; do
         for BATCH in $@ ; do
             for LR in 0.001 0.0005 0.0001 ; do
-                bash fairseq_train_minlev.sh $DATA_BIN $NAME $EMB $HID $LAYERS $BATCH $LR
+                bash fairseq_train_minlev_xe.sh $DATA_BIN $NAME $EMB $HID $LAYERS $BATCH $LR
                 bash fairseq_segment.sh $DATA_BIN "fairseq-checkpoints/grid-entmax/${NAME}-entmax-minlev-${EMB}-${HID}-${LAYERS}-${BATCH}-${ALPHA}-${LR}" 1 5 $GOLD_PATH
             done
         done
