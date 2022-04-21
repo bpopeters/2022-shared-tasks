@@ -30,5 +30,5 @@ bin() {
         --destdir="${OUT_PATH}"
 }
 
-python tokenize.py "${TSV}" --src-tok-type char --tgt-tok-type spm --existing-tgt-spm "${EXISTING_DATA_BIN}/tgt" --out-dir $OUT_PATH --split dev $@
+python scripts/tokenize.py "${TSV}" --src-tok-type char --tgt-tok-type spm --existing-tgt-spm "${EXISTING_DATA_BIN}/tgt" --out-dir $OUT_PATH --split dev $@
 bin
