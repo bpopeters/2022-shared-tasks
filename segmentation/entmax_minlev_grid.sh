@@ -16,8 +16,14 @@ for HID in 512 1024 ; do
     for LAYERS in 1 2 ; do
         for BATCH in $@ ; do
             for LR in 0.001 0.0005 0.0001 ; do
-                bash fairseq_train_minlev.sh $DATA_BIN $NAME $EMB $HID $LAYERS $BATCH $ALPHA $LR $GRID_LOC
-                bash fairseq_segment.sh $DATA_BIN "${GRID_LOC}/${NAME}-entmax-minlev-${EMB}-${HID}-${LAYERS}-${BATCH}-${ALPHA}-${LR}" 1.5 5 $GOLD_PATH
+                MODEL_DIR="${GRID_LOC}/${NAME}-entmax-minlev-${EMB}-${HID}-${LAYERS}-${BATCH}-${ALPHA}-${LR}"
+                if [ ! -f "${MODEL_DIR}/dev-5.results" ]
+                then
+                    bash fairseq_train_minlev.sh $DATA_BIN $NAME $EMB $HID $LAYERS $BATCH $ALPHA $LR $GRID_LOC
+                    bash fairseq_segment.sh $DATA_BIN $MODEL_DIR 1.5 5 $GOLD_PATH
+                else
+                    echo "skipping ${MODEL_DIR}"
+                fi
             done
         done
     done

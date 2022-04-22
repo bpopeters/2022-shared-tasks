@@ -10,7 +10,16 @@ LANG=$( basename $DATA .sentence)
 # fix these paths
 # python scripts/unique_types.py < other-data/europarl/Europarl.en-hu.en > other-data/train.eng.words.src
 
-cut -f 1 "${DATA}.dev.tsv" | python scripts/unique_types.py  > $NAME.dev.src
+# unique_types.py is currently problematic because it performs character-level
+# tokenization
+# but we can't quite use tokenize.py either because it does too much.
+
+# get unique types from sentence-level dev set (todo: add option for whitespace/nltk pretokenization)
+cut -f 1 "${DATA}.dev.tsv" | python scripts/unique_types.py > $NAME.dev.src
+
+# apply whitespace, spm tokenization to input (how to do this depends on the
+# contents of the word-level data-bin directory; if there is a sentencepiece
+# model, use it; otherwise, back off to characters).
 
 # - segment these types (this will require preprocessing them first)
 fairseq-interactive \

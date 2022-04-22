@@ -1,15 +1,16 @@
 DATA=$1  # no "train.tsv" or "dev.tsv" suffix
 VOCAB=$2
+COL=$3
 
 NAME=$( basename $DATA )
 
-EXP_NAME="unsup-baselines/spm/${NAME}-${VOCAB}"
+EXP_NAME="unsup-baselines/spm/${NAME}-${VOCAB}-${COL}"
 
 mkdir -p $EXP_NAME
 
 # copy unsegmented column to a temporary file
 TRAIN="${EXP_NAME}/train.tmp"
-cut -f 1 $DATA.train.tsv > $TRAIN
+cut -f $COL $DATA.train.tsv > $TRAIN
 
 # train spm model
 spm_train --input $TRAIN --model_prefix $EXP_NAME/spm.$VOCAB --vocab_size $VOCAB --character_coverage 1.0
