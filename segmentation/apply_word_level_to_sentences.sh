@@ -44,7 +44,7 @@ cut -f 1 "${SENTENCE_DEV_SET}" | python segment_table.py "${OUT_DIR}/sentence.un
 
 cut -f 1 "${SENTENCE_DEV_SET}" | paste - "${OUT_DIR}/dev.pred" > "${OUT_DIR}/dev.guess"
 
-python 2022SegmentationST/evaluation/evaluate.py --gold "${SENTENCE_DEV_SET}" --guess "${OUT_DIR}/dev.guess"
+python 2022SegmentationST/evaluation/evaluate.py --gold "${SENTENCE_DEV_SET}" --guess "${OUT_DIR}/dev.guess" > "${OUT_DIR}/dev.results"
 
 # is it feasible to do this on a training set? I believe so. The English europarl
 # set has 75k unique types (not too different from the task dev set. The
