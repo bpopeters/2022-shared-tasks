@@ -1,9 +1,11 @@
-
-
 WORD_MODEL=$1
-DATA=$2
-NAME=$( basename $DATA )
-LANG=$( basename $DATA .sentence)
+WORD_DATA_BIN=$2
+SENTENCE_DEV_SET=$3
+OUT_DIR=$4
+
+mkdir -p $OUT_DIR
+
+echo "${WORD_MODEL}\n${SENTENCE_DEV_SET}" > "${OUT_DIR}/description.txt"
 
 # General idea:
 # - get unique types from corpus (applying some kind of length filtering)
@@ -15,7 +17,9 @@ LANG=$( basename $DATA .sentence)
 # but we can't quite use tokenize.py either because it does too much.
 
 # get unique types from sentence-level dev set (todo: add option for whitespace/nltk pretokenization)
-cut -f 1 "${DATA}.dev.tsv" | python scripts/unique_types.py > $NAME.dev.src
+# in its current form, this will only work for char2*, but that
+# should be ok for now because we don't have any word-level piece2piece models
+cut -f 1 "${SENTENCE_DEV_SET}" | python scripts/unique_types.py > "${OUT_DIR}/sentence.uniq.src"
 
 # apply whitespace, spm tokenization to input (how to do this depends on the
 # contents of the word-level data-bin directory; if there is a sentencepiece
@@ -23,24 +27,24 @@ cut -f 1 "${DATA}.dev.tsv" | python scripts/unique_types.py > $NAME.dev.src
 
 # - segment these types (this will require preprocessing them first)
 fairseq-interactive \
-    "data-bin/${LANG}.word" \
+    $WORD_DATA_BIN \
     --path $WORD_MODEL \
-    --source-lang $LANG.word.src \
-    --target-lang $LANG.word.tgt \
+    --source-lang src \
+    --target-lang tgt \
     --beam 5 \
     --alpha 1.5  \
     --batch-size 256 \
-    --buffer-size 256 < "${NAME}.dev.src" | \
+    --buffer-size 256 < "${OUT_DIR}/sentence.uniq.src" | \
     grep -P '^H-'  | cut -c 3- | awk -F "\t" '{print $NF}' | \
-    python scripts/postprocess_fairseq.py "word" > $NAME.dev.values
+    python scripts/postprocess_fairseq.py "word" > "${OUT_DIR}/sentence.uniq.pred"
 
 # build the dictionary
-sed "s/ //g" $NAME.dev.src | paste - $NAME.dev.values > $NAME.dev.dict
-cut -f 1 "${DATA}.dev.tsv" | python segment_table.py $NAME.dev.dict > $NAME.dev.pred
+sed "s/ //g" "${OUT_DIR}/sentence.uniq.src" | paste - "${OUT_DIR}/sentence.uniq.pred" > "${OUT_DIR}/sentence.uniq.tsv"
+cut -f 1 "${SENTENCE_DEV_SET}" | python segment_table.py "${OUT_DIR}/sentence.uniq.tsv" > "${OUT_DIR}/dev.pred"
 
-cut -f 1 "${DATA}.dev.tsv" | paste - $NAME.dev.pred > $NAME.guess
+cut -f 1 "${SENTENCE_DEV_SET}" | paste - "${OUT_DIR}/dev.pred" > "${OUT_DIR}/dev.guess"
 
-python 2022SegmentationST/evaluation/evaluate.py --gold $DATA.dev.tsv --guess $NAME.guess
+python 2022SegmentationST/evaluation/evaluate.py --gold "${SENTENCE_DEV_SET}" --guess "${OUT_DIR}/dev.guess"
 
 # is it feasible to do this on a training set? I believe so. The English europarl
 # set has 75k unique types (not too different from the task dev set. The
