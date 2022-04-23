@@ -26,9 +26,11 @@ def main():
 
         surface_toks = surface_seq.split()
         segmented_words = get_segmented_words(segment_seq)
-        assert len(surface_toks) == len(segmented_words)
-        for word, word_segments in zip(surface_toks, segmented_words):
-            sys.stdout.write("\t".join([word, word_segments]) + "\n")
+        if len(surface_toks) == len(segmented_words):
+            for word, word_segments in zip(surface_toks, segmented_words):
+                sys.stdout.write("\t".join([word, word_segments]) + "\n")
+        else:
+            sys.stderr.write(str(surface_toks) + "\t" + str(segmented_words) + "\n")
         
             
 
