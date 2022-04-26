@@ -17,7 +17,7 @@ for HID in 512 1024 ; do
     for LAYERS in 1 2 ; do
         for BATCH in $@ ; do
             for LR in 0.001 0.0005 0.0001 ; do
-                MODEL_DIR="${GRID_LOC}/${NAME}-entmax-minlev-${EMB}-${HID}-${LAYERS}-${BATCH}-${ALPHA}-${LS}-${LR}"
+                MODEL_DIR="${GRID_LOC}/${NAME}-fyls-minlev-${EMB}-${HID}-${LAYERS}-${BATCH}-${ALPHA}-${LS}-${LR}"
                 if [ ! -f "${MODEL_DIR}/dev-5.results" ]
                 then
                     bash fairseq_train_minlev_fyls.sh $DATA_BIN $NAME $EMB $HID $LAYERS $BATCH $ALPHA $LS $LR $GRID_LOC
