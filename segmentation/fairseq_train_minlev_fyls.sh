@@ -7,7 +7,7 @@ BATCH=$6
 ENTMAX_ALPHA=$7
 LS=$8  # note!
 LR=$9
-GRID_LOC=$10
+GRID_LOC="${10}"
 
 # Adapted from the SIGMORPHON 2020 script by Kyle Gorman and Shijie Wu.
 
