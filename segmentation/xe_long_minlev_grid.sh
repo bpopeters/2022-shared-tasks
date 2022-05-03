@@ -18,7 +18,7 @@ for HID in 512 1024 ; do
                 MODEL_DIR="${GRID_LOC}/${NAME}-xe-minlev-${EMB}-${HID}-${LAYERS}-${BATCH}-${LR}"
                 if [ ! -f "${MODEL_DIR}/dev-5.results" ]
                 then
-                    bash fairseq_train_minlev_xe_long.sh $DATA_BIN $NAME $EMB $HID $LAYERS $BATCH $LR $GRID_LOC
+                    bash fairseq_train_xe_minlev_long.sh $DATA_BIN $NAME $EMB $HID $LAYERS $BATCH $LR $GRID_LOC
                     bash fairseq_segment.sh $DATA_BIN $MODEL_DIR 1 5 $GOLD_PATH
                 else
                     echo "skipping ${MODEL_DIR}"
