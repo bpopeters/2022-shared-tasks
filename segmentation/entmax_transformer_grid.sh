@@ -13,7 +13,7 @@ LAYERS=6
 
 grid() {
     local -r EMB="$1"; shift
-    local -r HID"$1"; shift
+    local -r HID="$1"; shift
     for WARMUP in 4000 8000 ; do
         for BATCH in $@ ; do
             MODEL_DIR="${GRID_LOC}/${NAME}-entmax-minlev-${EMB}-${HID}-${LAYERS}-${BATCH}-${ENTMAX_ALPHA}-${LR}-${WARMUP}"
@@ -27,6 +27,7 @@ grid() {
         done
     done
 }
+
 
 grid 256 1024
 grid 512 2048
