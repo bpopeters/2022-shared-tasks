@@ -19,7 +19,7 @@ grid() {
             MODEL_DIR="${GRID_LOC}/${NAME}-entmax-minlev-${EMB}-${HID}-${LAYERS}-${BATCH}-${ENTMAX_ALPHA}-${LR}-${WARMUP}"
             if [ ! -f "${MODEL_DIR}/dev-5.results" ]
             then
-                bash fairseq_train_entmax_transformer.sh $DATA_BIN $NAME $EMB $HID $LAYERS $BATCH $ALPHA $LR $WARMUP $GRID_LOC
+                bash fairseq_train_entmax_transformer.sh $DATA_BIN $NAME $EMB $HID $LAYERS $BATCH $ENTMAX_ALPHA $LR $WARMUP $GRID_LOC
                 bash fairseq_segment.sh $DATA_BIN $MODEL_DIR 1.5 5 $GOLD_PATH
             else
                 echo "skipping ${MODEL_DIR}"
