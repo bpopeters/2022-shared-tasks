@@ -24,6 +24,8 @@ readonly LR_SCHEDULER=inverse_sqrt
 readonly WARMUP_INIT_LR=1e-7
 readonly PATIENCE=5
 readonly DROPOUT=0.3
+readonly ENCODER_ATTENTION_HEADS=8
+readonly DECODER_ATTENTION_HEADS=8
 
 MODEL_DIR="${GRID_LOC}/${NAME}-entmax-minlev-${EMB}-${HID}-${LAYERS}-${BATCH}-${ENTMAX_ALPHA}-${LR}-${WARMUP}"
 
