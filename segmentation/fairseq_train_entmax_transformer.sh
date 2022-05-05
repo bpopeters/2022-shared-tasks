@@ -3,13 +3,13 @@ readonly NAME=$2  # just a special name for the experiment
 EMB=$3
 HID=$4
 LAYERS=$5
-BATCH=$6
-ENTMAX_ALPHA=$7
-LR=$8  # note!
-WARMUP=$9
-GRID_LOC="${10}"
-
-# warmup steps?
+HEADS=$6
+BATCH=$7
+ENTMAX_ALPHA=$8
+LR="${9}"
+WARMUP="${10}"
+DROPOUT="${11}"
+GRID_LOC="${12}"
 
 set -euo pipefail
 
@@ -23,12 +23,9 @@ readonly SAVE_INTERVAL=1
 readonly LR_SCHEDULER=inverse_sqrt
 readonly WARMUP_INIT_LR=1e-7
 readonly PATIENCE=5
-readonly DROPOUT=0.3
-readonly ENCODER_ATTENTION_HEADS=8
-readonly DECODER_ATTENTION_HEADS=8
 readonly ACTIVATION_FN=relu
 
-MODEL_DIR="${GRID_LOC}/${NAME}-entmax-minlev-${EMB}-${HID}-${LAYERS}-${BATCH}-${ENTMAX_ALPHA}-${LR}-${WARMUP}"
+MODEL_DIR="${GRID_LOC}/${NAME}-entmax-minlev-${EMB}-${HID}-${LAYERS}-${HEADS}-${BATCH}-${ENTMAX_ALPHA}-${LR}-${WARMUP}-${DROPOUT}"
 
 train() {
     local -r CP="$1"; shift
@@ -47,12 +44,12 @@ train() {
         --encoder-embed-dim="${EMB}" \
         --encoder-ffn-embed-dim="${HID}" \
         --encoder-layers="${ENCODER_LAYERS}" \
-        --encoder-attention-heads="${ENCODER_ATTENTION_HEADS}" \
+        --encoder-attention-heads="${HEADS}" \
         --encoder-normalize-before \
         --decoder-embed-dim="${EMB}" \
         --decoder-ffn-embed-dim="${HID}" \
         --decoder-layers="${DECODER_LAYERS}" \
-        --decoder-attention-heads="${DECODER_ATTENTION_HEADS}" \
+        --decoder-attention-heads="${HEADS}" \
         --decoder-normalize-before \
         --share-decoder-input-output-embed \
         --criterion="${CRITERION}" \
