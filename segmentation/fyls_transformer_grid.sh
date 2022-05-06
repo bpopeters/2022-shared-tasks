@@ -35,3 +35,4 @@ grid() {
 for eps in 0.01 0.05 0.1 ; do
     grid 256 1024 6 8 $eps $@
     grid 512 2048 6 8 $eps $@
+done
