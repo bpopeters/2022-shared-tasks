@@ -24,10 +24,9 @@ preptok $TEST_PATH | \
         --path $MODEL_PATH \
         --source-lang src \
         --target-lang tgt \
-        --beam 5 \
-        --alpha 1.5  \
         --batch-size 256 \
-        --buffer-size 256 | \
+        --buffer-size 256 \
+        "$@" | \
     grep -P '^H-'  | \
     cut -c 3- | \
     awk -F "\t" '{print $NF}' | \
