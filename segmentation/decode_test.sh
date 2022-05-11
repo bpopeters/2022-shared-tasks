@@ -22,5 +22,8 @@ preptok $TEST_PATH | \
         --beam 5 \
         --alpha 1.5  \
         --batch-size 256 \
-        --buffer-size 256
+        --buffer-size 256 | \
+    grep -P '^H-'  | \
+    cut -c 3- | \
+    awk -F "\t" '{print $NF}'
     
