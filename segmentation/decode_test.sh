@@ -25,6 +25,7 @@ preptok $TEST_PATH | \
         --buffer-size 256 | \
     grep -P '^H-'  | \
     cut -c 3- | \
-    awk -F "\t" '{print $NF}' |\
-    python detokenize.py
+    awk -F "\t" '{print $NF}' | \
+    python detokenize.py | \
+    paste $TEST_PATH -
     
