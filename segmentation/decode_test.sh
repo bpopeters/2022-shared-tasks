@@ -16,7 +16,7 @@ preptok() {
 preptok $TEST_PATH | \
     fairseq-interactive \
         $DATA_PATH \
-        --path $MODEL_MODEL \
+        --path $MODEL_PATH \
         --source-lang src \
         --target-lang tgt \
         --beam 5 \
