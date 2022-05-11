@@ -7,7 +7,12 @@ shift 3
 
 # todo: add case for character-level segmentation
 preptok() {
-    cat $1 | spm_encode --model "${DATA_PATH}/src.model"
+    if [ ! -f "${DATA_PATH}/src.model" ]
+    then
+        cat $1 | python scripts/tokenize_src_chars.py
+    else
+        cat $1 | spm_encode --model "${DATA_PATH}/src.model"
+    fi
 }
 
 # tokenize test examples: this is either whitespace segmentation or applying
