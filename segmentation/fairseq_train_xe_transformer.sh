@@ -52,7 +52,6 @@ train() {
         --decoder-normalize-before \
         --share-decoder-input-output-embed \
         --criterion="${CRITERION}" \
-        --loss-alpha="${ENTMAX_ALPHA}" \
         --optimizer="${OPTIMIZER}" \
         --lr="${LR}" \
         --lr-scheduler="${LR_SCHEDULER}" \
