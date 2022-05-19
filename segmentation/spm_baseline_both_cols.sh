@@ -12,7 +12,7 @@ mkdir -p $EXP_NAME
 python scripts/build_vocab_for_analysis.py $TRAIN $VOCAB $EXP_NAME/spm.$VOCAB
 
 # segment dev set
-cut -f 1 $DEV | spm_encode --model $MODEL --output_format piece | python scripts/spm2out.py > "${EXP_NAME}/spm.out"
+cut -f 1 $DEV | spm_encode --model $EXP_NAME/spm.$VOCAB.model --output_format piece | python scripts/spm2out.py > "${EXP_NAME}/spm.out"
 
 # evaluate
 cut -f 1 $DEV | paste - "${EXP_NAME}/spm.out" > "${EXP_NAME}/guess"
