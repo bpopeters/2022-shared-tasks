@@ -1,4 +1,5 @@
 import sys
+from itertools import chain
 from tokenize import read_tsv, prepare_spm
 
 
