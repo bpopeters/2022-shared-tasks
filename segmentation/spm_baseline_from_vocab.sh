@@ -1,6 +1,5 @@
 MODEL=$1
 DATA=$2 # full path
-GOLD=$3
 
 NAME=$( basename $DATA .dev.tsv)
 
@@ -14,4 +13,4 @@ cut -f 1 $DATA | spm_encode --model $MODEL --output_format piece | python script
 # evaluate
 cut -f 1 $DATA | paste - "${EXP_NAME}/spm.out" > "${EXP_NAME}/guess"
 
-python 2022SegmentationST/evaluation/evaluate.py --gold $DATA.dev.tsv --guess "${EXP_NAME}/guess" > "${EXP_NAME}/dev.results"
+python 2022SegmentationST/evaluation/evaluate.py --gold $DATA --guess "${EXP_NAME}/guess" > "${EXP_NAME}/dev.results"
