@@ -4,7 +4,7 @@ from tokenize import read_tsv, prepare_spm
 
 def main(corpus, vocab, spm_path, *kwargs):
     vocab = int(vocab)
-    data = read_tsv(args.corpus)
+    data = read_tsv(corpus)
     src = data["surface"]
     tgt = data["segment"]
 
