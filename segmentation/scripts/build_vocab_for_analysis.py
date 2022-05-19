@@ -1,3 +1,4 @@
+import sys
 from tokenize import read_tsv, prepare_spm
 
 
