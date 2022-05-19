@@ -1,4 +1,4 @@
-from .tokenize import read_tsv, prepare_spm
+from tokenize import read_tsv, prepare_spm
 
 
 def main(corpus, vocab, spm_path, *kwargs):
