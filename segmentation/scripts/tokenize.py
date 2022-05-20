@@ -145,7 +145,8 @@ def main(args):
             args.existing_src_spm,
             src_spm_path,
             chain(src, tgt) if args.shared_data else iter(src),
-            args.vocab_size
+            args.vocab_size,
+            model_type="bpe" if args.bpe else "unigram"
         )
         # todo: character coverage, alpha hyperparameter
         src_tokenizer = partial(
@@ -164,7 +165,8 @@ def main(args):
             args.existing_tgt_spm,
             tgt_spm_path,
             chain(src, tgt) if args.shared_data else iter(tgt),
-            args.vocab_size
+            args.vocab_size,
+            model_type="bpe" if args.bpe else "unigram"
         )
         # todo: character coverage, alpha hyperparameter
         tgt_tokenizer = partial(
@@ -219,5 +221,6 @@ if __name__ == "__main__":
     parser.add_argument("--shared-data", action="store_true")
     parser.add_argument("--n-samples", type=int, default=1,
                         help="Number of times to repeat the corpus (useful for subword regularization)")
+    parser.add_argument("--bpe", action="store_true", help="use BPE instead of ULM")
     opt = parser.parse_args()
     main(opt)
