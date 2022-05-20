@@ -4,8 +4,7 @@ from itertools import chain
 from tokenize import read_tsv, prepare_spm
 
 
-def main(args:
-    vocab = int(vocab)
+def main(args):
     data = read_tsv(args.corpus)
     src = data["surface"]
     tgt = data["segment"]

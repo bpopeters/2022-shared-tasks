@@ -9,7 +9,7 @@ EXP_NAME="unsup-baselines/bpe/both-cols/${NAME}-${VOCAB}"
 mkdir -p $EXP_NAME
 
 # train spm model
-python scripts/build_vocab_for_analysis.py $TRAIN $VOCAB $EXP_NAME/spm.$VOCAB
+python scripts/build_vocab_for_analysis.py $TRAIN $VOCAB $EXP_NAME/spm.$VOCAB --bpe
 
 # segment dev set
 cut -f 1 $DEV | spm_encode --model $EXP_NAME/spm.$VOCAB.model --output_format piece | python scripts/spm2out.py > "${EXP_NAME}/spm.out"
