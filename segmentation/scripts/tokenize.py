@@ -93,7 +93,7 @@ def write_character_vocab(path, char_seqs):
             f.write("\t".join([char, str(count)]) + "\n")
 
 
-def prepare_spm(existing_spm_path, spm_path, train_iter, vocab_size):
+def prepare_spm(existing_spm_path, spm_path, train_iter, vocab_size, model_type="unigram"):
     """
     If existing_spm_path is not None, train_iter and vocab_size are ignored
 
@@ -116,7 +116,8 @@ def prepare_spm(existing_spm_path, spm_path, train_iter, vocab_size):
             sentence_iterator=train_iter,
             model_prefix=spm_path,
             vocab_size=vocab_size,
-            character_coverage=1.0
+            character_coverage=1.0,
+            model_type=model_type
         )
 
     # now: the spm model has been built. Use it to make a processor
