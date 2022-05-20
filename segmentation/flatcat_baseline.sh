@@ -26,10 +26,10 @@ cut -f 1,2 $TRAIN | sed "s/ @@/‖/g" | sed "s/ /_/g" | sed "s/\t/ /g" | sed "s/
 BASELINE_PATH="${EXP_NAME}/baseline.gz"
 morfessor-train $CORPUS -S $BASELINE_PATH -w $CORPUS_WEIGHT -A $ANNOT -W $ANNOT_WEIGHT
 
-ANALYSIS_PATH="${EXP_NAME}/analysis.targ.gz"
+ANALYSIS_PATH="${EXP_NAME}/analysis.tar.gz"
 flatcat-train $BASELINE_PATH -p $PPL_THRESHOLD -w $CORPUS_WEIGHT -A $ANNOT -W $ANNOT_WEIGHT -s $ANALYSIS_PATH
 
-cut -f 1 $DEV | flatcat-segment $ANALYSIS_PATH - -o "${EXP_NAME}/flatcat.pred" --remove-nonmorphemes
+cut -f 1 $DEV | python scripts/preprocess_morfessor.py | flatcat-segment $ANALYSIS_PATH - -o "${EXP_NAME}/flatcat.pred" -p -p $PPL_THRESHOLD --remove-nonmorphemes
 
 
 # MODEL_PATH="${EXP_NAME}/model.bin"
