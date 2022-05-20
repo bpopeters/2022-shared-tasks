@@ -1,11 +1,8 @@
 # DATA=$1  # no "train.tsv" or "dev.tsv" suffix
 TRAIN=$1
 DEV=$2
-
-CORPUS_WEIGHT=1.0
-ANNOT_WEIGHT=0.1
-
-# todo: add hyperparameters
+CORPUS_WEIGHT=$3
+ANNOT_WEIGHT=$4
 
 NAME=$( basename $TRAIN .train.tsv)
 
