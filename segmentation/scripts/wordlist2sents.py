@@ -14,10 +14,11 @@ def main(dict_path):
     assert all(len(v) == 1 for v in morph_dict.values())
     morph_dict = {k: next(iter(v)) for k, v in morph_dict.items()}
     for line in sys.stdin:
+        gold_surface, gold_segments = line.rstrip().split("\t")
         out_morphs = []
-        for token in line.strip().split():
+        for token in gold_surface:
             out_morphs.append(morph_dict.get(token, token))
-        sys.stdout.write(" ".join(out_morphs) + "\n")
+        sys.stdout.write(" ".join(out_morphs) + "\t" + gold_segments + "\n")
 
 
 if __name__ == "__main__":
