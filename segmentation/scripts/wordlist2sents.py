@@ -18,7 +18,7 @@ def main(dict_path):
         out_morphs = []
         for token in gold_surface.split():
             out_morphs.append(morph_dict.get(token, token))
-        sys.stdout.write(" ".join(out_morphs) + "\t" + gold_segments + "\n")
+        sys.stdout.write(gold_surface + "\t" + " ".join(out_morphs) + "\n")
 
 
 if __name__ == "__main__":
