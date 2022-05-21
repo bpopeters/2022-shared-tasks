@@ -6,7 +6,10 @@ def main(dict_path):
     morph_dict = defaultdict(set)
     with open(dict_path) as f:
         for line in f:
-            surface, segments = line.strip().split("\t")
+            try:
+                surface, segments = line.strip().split("\t")
+            except ValueError:
+                sys.stderr.write("bad line: " + line)
             morph_dict[surface].add(segments)
     assert all(len(v) == 1 for v in morph_dict.values())
     morph_dict = {k: next(iter(v)) for k, v in morph_dict.items()}
