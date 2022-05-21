@@ -16,7 +16,7 @@ def main(dict_path):
     for line in sys.stdin:
         gold_surface, gold_segments = line.rstrip().split("\t")
         out_morphs = []
-        for token in gold_surface:
+        for token in gold_surface.split():
             out_morphs.append(morph_dict.get(token, token))
         sys.stdout.write(" ".join(out_morphs) + "\t" + gold_segments + "\n")
 
