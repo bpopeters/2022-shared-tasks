@@ -15,7 +15,7 @@ cat $DATA_BIN/dev.src | \
         --buffer-size 256 \
         --nbest $BEAM \
         --beam $BEAM \
-        --unnormalized | \
+        --unnormalized \
         "$@" | \
         grep -P '^H-' | python scripts/compute_beam_exactness.py \
         > "${MODEL_DIR}/dev-${BEAM}.exactness"
