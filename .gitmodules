@@ -5,5 +5,5 @@
 	path = segmentation/2022SegmentationST
 	url = git@github.com:bpopeters/2022SegmentationST.git
 [submodule "2021-task1"]
-	path = 2021-task1
+	path = g2p/2021-task1
 	url = git@github.com:sigmorphon/2021-task1.git
